@@ -2,9 +2,9 @@ import { Row } from "antd";
 import styled from "styled-components";
 
 export const WrapperHeader = styled(Row)`
+    padding: 15px 120px;
     display: flex;
     align-items: center;
-    padding: 15px 120px;
     /* background-color: rgb(26, 148, 255); */
     background-image: linear-gradient(45deg, #00dbde 0%, #fc00ff 100%);
 `;
@@ -21,7 +21,7 @@ export const WrapperTextHeaderSmall = styled.span`
     color: #fff;
 `;
 
-export const WrapperHeaderLeftItem = styled.div`
+export const WrapperHeaderRightItem = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;

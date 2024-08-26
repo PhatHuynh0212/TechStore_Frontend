@@ -3,7 +3,7 @@ import { Col } from "antd";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
     WrapperHeader,
-    WrapperHeaderLeftItem,
+    WrapperHeaderRightItem,
     WrapperTextHeader,
     WrapperTextHeaderSmall,
 } from "./style";
@@ -35,7 +35,7 @@ const HeaderComponent = () => {
                     span={6}
                     style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                    <WrapperHeaderLeftItem>
+                    <WrapperHeaderRightItem>
                         <UserOutlined style={{ fontSize: "30px" }} />
                         <div>
                             <WrapperTextHeaderSmall>
@@ -48,13 +48,18 @@ const HeaderComponent = () => {
                                 <CaretDownOutlined />
                             </div>
                         </div>
-                    </WrapperHeaderLeftItem>
-                    <WrapperHeaderLeftItem>
+                    </WrapperHeaderRightItem>
+                    <WrapperHeaderRightItem>
                         <ShoppingCartOutlined style={{ fontSize: "35px" }} />
-                        <WrapperTextHeaderSmall>
+                        <WrapperTextHeaderSmall
+                            style={{
+                                alignSelf: "flex-end",
+                                paddingBottom: "4px",
+                            }}
+                        >
                             Shopping Cart
                         </WrapperTextHeaderSmall>
-                    </WrapperHeaderLeftItem>
+                    </WrapperHeaderRightItem>
                 </Col>
             </WrapperHeader>
         </div>
