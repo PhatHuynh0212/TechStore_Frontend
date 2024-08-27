@@ -14,7 +14,7 @@ export const WrapperTextValue = styled.span`
 
 export const WrapperPrice = styled.div`
     padding: 4px 8px;
-    background: orange;
+    background: #d9d9d9;
     width: fit-content;
     border-radius: 20px;
     color: rgb(56, 56, 61);

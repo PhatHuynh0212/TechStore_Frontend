@@ -83,9 +83,16 @@ const NavBarComponent = () => {
                     { value: "c", label: "Get Discount" },
                 ])}
             </WrapperContent>
+            <WrapperLabelText>Location branch</WrapperLabelText>
+            <WrapperContent>
+                {renderContent("checkbox", [
+                    { value: "a", label: "Sai Gon" },
+                    { value: "b", label: "An Giang" },
+                ])}
+            </WrapperContent>
             <WrapperLabelText>Evaluation</WrapperLabelText>
             <WrapperContent>
-                {renderContent("star", [4, 4.8, 5])}
+                {renderContent("star", [3.5, 4, 5])}
             </WrapperContent>
             <WrapperLabelText>Price</WrapperLabelText>
             <WrapperContent>

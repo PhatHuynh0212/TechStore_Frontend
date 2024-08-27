@@ -1,7 +1,29 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { WrapperNotFoundPage } from "./style";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 
 const NotFoundPage = () => {
-    return <div>NotFoundPage</div>;
+    return (
+        <WrapperNotFoundPage
+            status="404"
+            title="404"
+            subTitle="Sorry, the page you visited does not exist."
+            extra={
+                <Link to="/">
+                    <ButtonComponent
+                        size="large"
+                        textButton="Back Home"
+                        styleButton={{
+                            color: "#fff",
+                            backgroundColor: "#1890ff",
+                            borderColor: "#1890ff",
+                        }}
+                    />
+                </Link>
+            }
+        />
+    );
 };
 
 export default NotFoundPage;
