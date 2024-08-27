@@ -1,5 +1,5 @@
 import React from "react";
-import { Col } from "antd";
+import { Badge, Col } from "antd";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
     WrapperHeader,
@@ -50,7 +50,11 @@ const HeaderComponent = () => {
                         </div>
                     </WrapperHeaderRightItem>
                     <WrapperHeaderRightItem>
-                        <ShoppingCartOutlined style={{ fontSize: "35px" }} />
+                        <Badge count={3} size="small">
+                            <ShoppingCartOutlined
+                                style={{ fontSize: "35px", color: "#fff" }}
+                            />
+                        </Badge>
                         <WrapperTextHeaderSmall
                             style={{
                                 alignSelf: "flex-end",
