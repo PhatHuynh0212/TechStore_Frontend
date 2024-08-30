@@ -6,6 +6,7 @@ import {
     WrapperDiscountText,
     WrapperPriceText,
     WrapperReportText,
+    WrapperStyleTextSell,
 } from "./style";
 
 const CardComponent = () => {
@@ -32,7 +33,7 @@ const CardComponent = () => {
                         }}
                     />
                 </span>
-                <span>| Sold 1000+</span>
+                <WrapperStyleTextSell>| Sold 1000+</WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
                 29.990.000đ
