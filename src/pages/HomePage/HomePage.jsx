@@ -18,7 +18,7 @@ const HomePage = () => {
     const arr = ["Cellphone", "Tablet", "Laptop", "PC"];
     return (
         <>
-            <div style={{ padding: " 0 120px" }}>
+            <div style={{ width: "1270px", margin: "0 auto" }}>
                 <WrapperTypeProduct>
                     {arr.map((item) => {
                         return <TypeProduct key={item} name={item} />;
@@ -26,42 +26,53 @@ const HomePage = () => {
                 </WrapperTypeProduct>
             </div>
             <div
-                id="container"
-                style={{
-                    background: "#efefef",
-                    padding: " 0 120px",
-                    height: "2000px",
-                }}
+                className="body"
+                style={{ width: "100%", background: "#efefef" }}
             >
-                <SliderComponent
-                    arrImages={[slider1, slider2, slider3, slider4, slider5]}
-                />
-                <WrapperProduct>
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                </WrapperProduct>
-                <WrapperButtonShow>
-                    <WrapperButtonHover
-                        textButton="Show more"
-                        type="outline"
-                        styleButton={{
-                            width: "240px",
-                            height: "38px",
-                            border: "1px solid #0B74E5",
-                            borderRadius: "5px",
-                            color: "#0B74E5",
-                            fontSize: "1.6rem",
-                            fontWeight: "500",
-                        }}
+                <div
+                    id="container"
+                    style={{
+                        width: "1270px",
+                        height: "2000px",
+                        margin: "0 auto",
+                    }}
+                >
+                    <SliderComponent
+                        arrImages={[
+                            slider1,
+                            slider2,
+                            slider3,
+                            slider4,
+                            slider5,
+                        ]}
                     />
-                </WrapperButtonShow>
+                    <WrapperProduct>
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                    </WrapperProduct>
+                    <WrapperButtonShow>
+                        <WrapperButtonHover
+                            textButton="Show more"
+                            type="outline"
+                            styleButton={{
+                                width: "240px",
+                                height: "38px",
+                                border: "1px solid #0B74E5",
+                                borderRadius: "5px",
+                                color: "#0B74E5",
+                                fontSize: "1.6rem",
+                                fontWeight: "500",
+                            }}
+                        />
+                    </WrapperButtonShow>
+                </div>
             </div>
         </>
     );

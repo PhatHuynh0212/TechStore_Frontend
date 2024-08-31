@@ -21,7 +21,7 @@ const ButtonInputSearch = (props) => {
                 placeholder={placeholder}
                 allowClear
                 style={{
-                    width: "500px",
+                    width: "550px",
                     border: bordered,
                     background: backgroundColorInput,
                     borderRadius: "6px 0 0 6px",

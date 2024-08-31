@@ -2,6 +2,7 @@ import React from "react";
 import { Badge, Col } from "antd";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
+    WrapperContainerHeader,
     WrapperHeader,
     WrapperHeaderRightItem,
     WrapperTextHeader,
@@ -15,12 +16,12 @@ import {
 
 const HeaderComponent = () => {
     return (
-        <div>
+        <WrapperContainerHeader>
             <WrapperHeader>
-                <Col span={6}>
+                <Col span={5}>
                     <WrapperTextHeader>TechStore</WrapperTextHeader>
                 </Col>
-                <Col span={12}>
+                <Col span={13}>
                     <ButtonInputSearch
                         size="large"
                         placeholder="input search text"
@@ -66,7 +67,7 @@ const HeaderComponent = () => {
                     </WrapperHeaderRightItem>
                 </Col>
             </WrapperHeader>
-        </div>
+        </WrapperContainerHeader>
     );
 };
 

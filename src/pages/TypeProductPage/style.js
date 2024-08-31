@@ -3,13 +3,14 @@ import styled from "styled-components";
 
 export const WrapperProduct = styled(Col)`
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    gap: 20px;
+    gap: 30px;
     flex-wrap: wrap;
 `;
 
 export const WrapperNavbar = styled(Col)`
+    width: 200px;
     height: fit-content;
     margin-right: 15px;
     background: #fff;
@@ -18,8 +19,7 @@ export const WrapperNavbar = styled(Col)`
 `;
 
 export const WrapperContent = styled(Row)`
-    padding: 20px 120px 0;
-    background: #efefef;
+    padding-top: 20px;
     flex-wrap: nowrap;
 `;
 
