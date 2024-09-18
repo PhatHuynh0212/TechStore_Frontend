@@ -11,9 +11,29 @@ import InputForm from "../../components/InputForm/InputForm";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import LogoSignIn from "../../assets/images/logo-signIn.png";
 import { Image } from "antd";
+import { useNavigate } from "react-router";
 
 const SignInPage = () => {
+    const navigate = useNavigate();
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleNavigateSignup = () => {
+        navigate("/sign-up");
+    };
+
+    const handleOnChangeEmail = (value) => {
+        setEmail(value);
+    };
+
+    const handleOnChangePassword = (value) => {
+        setPassword(value);
+    };
+
+    const handleSignIn = () => {
+        console.log("sign-in", email, password);
+    };
 
     return (
         <WrapperSignInPage>
@@ -24,9 +44,12 @@ const SignInPage = () => {
                     <InputForm
                         placeholder="abc@email.com"
                         style={{ marginBottom: "15px" }}
+                        value={email}
+                        onChange={handleOnChangeEmail}
                     />
                     <div style={{ position: "relative" }}>
                         <span
+                            onClick={() => setIsShowPassword(!isShowPassword)}
                             style={{
                                 zIndex: "10",
                                 position: "absolute",
@@ -43,9 +66,13 @@ const SignInPage = () => {
                         <InputForm
                             placeholder="password"
                             type={isShowPassword ? "text" : "password"}
+                            value={password}
+                            onChange={handleOnChangePassword}
                         />
                     </div>
                     <ButtonComponent
+                        disabled={!email.length || !password.length}
+                        onClick={handleSignIn}
                         size={40}
                         styleButton={{
                             color: "#fff",
@@ -65,7 +92,9 @@ const SignInPage = () => {
                     </p>
                     <p>
                         No account?{" "}
-                        <WrapperTextLight>Create your account</WrapperTextLight>
+                        <WrapperTextLight onClick={handleNavigateSignup}>
+                            Create your account
+                        </WrapperTextLight>
                     </p>
                 </WrapperContainerLeft>
                 <WrapperContainerRight>
