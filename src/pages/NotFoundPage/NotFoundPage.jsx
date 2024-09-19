@@ -16,7 +16,7 @@ const NotFoundPage = () => {
                         textButton="Back Home"
                         styleButton={{
                             color: "#fff",
-                            backgroundColor: "#1890ff",
+                            background: "#1890ff",
                             borderColor: "#1890ff",
                         }}
                     />

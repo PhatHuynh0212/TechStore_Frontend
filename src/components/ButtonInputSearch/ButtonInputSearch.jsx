@@ -30,7 +30,7 @@ const ButtonInputSearch = (props) => {
             <ButtonComponent
                 size={size}
                 icon={<SearchOutlined />}
-                style={{
+                styleButton={{
                     border: bordered,
                     color: colorButton,
                     background: backgroundColorButton,

@@ -3,12 +3,7 @@ import React from "react";
 import imgProduct from "../../assets/images/img-product.webp";
 import imgSmall from "../../assets/images/imgsmall.webp";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
-import {
-    BgColorsOutlined,
-    MinusOutlined,
-    PlusOutlined,
-    StarFilled,
-} from "@ant-design/icons";
+import { MinusOutlined, PlusOutlined, StarFilled } from "@ant-design/icons";
 import {
     WrapperAddressProduct,
     WrapperInputNumber,
