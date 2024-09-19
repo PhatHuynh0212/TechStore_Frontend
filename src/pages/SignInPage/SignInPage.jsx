@@ -9,15 +9,22 @@ import {
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import InputForm from "../../components/InputForm/InputForm";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import Loading from "../../components/LoadingComponent/LoadingComponent";
 import LogoSignIn from "../../assets/images/logo-signIn.png";
 import { Image } from "antd";
 import { useNavigate } from "react-router";
+import * as UserService from "../../services/UserService";
+import { useMutationHooks } from "../../hooks/useMutationHook";
 
 const SignInPage = () => {
     const navigate = useNavigate();
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    // Call API
+    const mutation = useMutationHooks((data) => UserService.loginUser(data));
+    const { data, isPending } = mutation;
 
     const handleNavigateSignup = () => {
         navigate("/sign-up");
@@ -32,7 +39,10 @@ const SignInPage = () => {
     };
 
     const handleSignIn = () => {
-        console.log("sign-in", email, password);
+        mutation.mutate({
+            email,
+            password,
+        });
     };
 
     return (
@@ -70,23 +80,28 @@ const SignInPage = () => {
                             onChange={handleOnChangePassword}
                         />
                     </div>
-                    <ButtonComponent
-                        disabled={!email.length || !password.length}
-                        onClick={handleSignIn}
-                        size={40}
-                        styleButton={{
-                            color: "#fff",
-                            fontSize: "1.8rem",
-                            fontWeight: "600",
-                            background: "#FF3945",
-                            height: "45px",
-                            width: "100%",
-                            border: "none",
-                            borderRadius: "4px",
-                            margin: "26px 0 10px",
-                        }}
-                        textButton={"Sign In"}
-                    />
+                    {data?.status === "ERR" && (
+                        <span style={{ color: "red" }}>{data?.message}</span>
+                    )}
+                    <Loading isPending={isPending}>
+                        <ButtonComponent
+                            disabled={!email.length || !password.length}
+                            onClick={handleSignIn}
+                            size={40}
+                            styleButton={{
+                                color: "#fff",
+                                fontSize: "1.8rem",
+                                fontWeight: "600",
+                                background: "#FF3945",
+                                height: "45px",
+                                width: "100%",
+                                border: "none",
+                                borderRadius: "4px",
+                                margin: "26px 0 10px",
+                            }}
+                            textButton={"Sign In"}
+                        />
+                    </Loading>
                     <p>
                         <WrapperTextLight>Forgot password?</WrapperTextLight>
                     </p>
