@@ -22,8 +22,9 @@ const HeaderComponent = () => {
     const handleNavigateSignin = () => {
         navigate("/sign-in");
     };
-
-    console.log("user: ", user);
+    // const handleNavigateHome = () => {
+    //     navigate("/");
+    // };
 
     return (
         <WrapperContainerHeader>
