@@ -14,12 +14,16 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 const HeaderComponent = () => {
     const navigate = useNavigate();
+    const user = useSelector((state) => state.user);
     const handleNavigateSignin = () => {
         navigate("/sign-in");
     };
+
+    console.log("user: ", user);
 
     return (
         <WrapperContainerHeader>
@@ -44,20 +48,24 @@ const HeaderComponent = () => {
                 >
                     <WrapperHeaderRightItem>
                         <UserOutlined style={{ fontSize: "30px" }} />
-                        <div
-                            onClick={handleNavigateSignin}
-                            style={{ cursor: "pointer" }}
-                        >
-                            <WrapperTextHeaderSmall>
-                                Sign in / Sign up
-                            </WrapperTextHeaderSmall>
-                            <div>
-                                <span style={{ paddingRight: "4px" }}>
-                                    Account
-                                </span>
-                                <CaretDownOutlined />
+                        {user?.name ? (
+                            <div style={{ cursor: "pointer" }}>{user.name}</div>
+                        ) : (
+                            <div
+                                onClick={handleNavigateSignin}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <WrapperTextHeaderSmall>
+                                    Sign in / Sign up
+                                </WrapperTextHeaderSmall>
+                                <div>
+                                    <span style={{ paddingRight: "4px" }}>
+                                        Account
+                                    </span>
+                                    <CaretDownOutlined />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </WrapperHeaderRightItem>
                     <WrapperHeaderRightItem>
                         <Badge count={3} size="small">

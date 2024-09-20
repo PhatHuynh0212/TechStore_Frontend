@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     WrapperContainerLeft,
     WrapperContainerRight,
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/LoadingComponent";
+import * as Message from "../../components/Message/Message";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
@@ -26,9 +27,18 @@ const SignUpPage = () => {
 
     // Call API
     const mutation = useMutationHooks((data) => UserService.signupUser(data));
-    const { data, isPending } = mutation;
+    const { data, isPending, isSuccess, isError } = mutation;
 
-    const handleNavigateSignin = () => {
+    useEffect(() => {
+        if (isSuccess) {
+            Message.success();
+            handleNavigateSignIn();
+        } else if (isError) {
+            Message.error();
+        }
+    }, [isSuccess, isError]);
+
+    const handleNavigateSignIn = () => {
         navigate("/sign-in");
     };
 
@@ -140,7 +150,7 @@ const SignUpPage = () => {
                     </Loading>
                     <p>
                         You already have account?{" "}
-                        <WrapperTextLight onClick={handleNavigateSignin}>
+                        <WrapperTextLight onClick={handleNavigateSignIn}>
                             Sign In
                         </WrapperTextLight>
                     </p>

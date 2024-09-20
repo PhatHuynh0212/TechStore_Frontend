@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     WrapperContainerLeft,
     WrapperContainerRight,
@@ -15,18 +15,40 @@ import { Image } from "antd";
 import { useNavigate } from "react-router";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slides/userSlide";
 
 const SignInPage = () => {
     const navigate = useNavigate();
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
 
     // Call API
     const mutation = useMutationHooks((data) => UserService.loginUser(data));
-    const { data, isPending } = mutation;
+    const { data, isPending, isSuccess } = mutation;
 
-    const handleNavigateSignup = () => {
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/");
+            localStorage.setItem("access_token", data?.access_token);
+            if (data?.access_token) {
+                const decoded = jwtDecode(data?.access_token);
+                if (decoded?.id) {
+                    handleGetDetailsUser(decoded?.id, data?.access_token);
+                }
+            }
+        }
+    }, [isSuccess]);
+
+    const handleGetDetailsUser = async (id, token) => {
+        const res = await UserService.getDetailsUser(id, token);
+        dispatch(updateUser({ ...res?.data, access_token: token }));
+    };
+
+    const handleNavigateSignUp = () => {
         navigate("/sign-up");
     };
 
@@ -107,7 +129,7 @@ const SignInPage = () => {
                     </p>
                     <p>
                         No account?{" "}
-                        <WrapperTextLight onClick={handleNavigateSignup}>
+                        <WrapperTextLight onClick={handleNavigateSignUp}>
                             Create your account
                         </WrapperTextLight>
                     </p>
