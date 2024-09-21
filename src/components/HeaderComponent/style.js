@@ -33,3 +33,11 @@ export const WrapperHeaderRightItem = styled.div`
     gap: 8px;
     color: #fff;
 `;
+
+export const WrapperContentPopup = styled.p`
+    cursor: pointer;
+    &:hover {
+        background: orange;
+        color: #fff;
+    }
+`;

@@ -1,8 +1,9 @@
-import React from "react";
-import { Badge, Col } from "antd";
+import React, { useState } from "react";
+import { Badge, Col, Popover } from "antd";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
     WrapperContainerHeader,
+    WrapperContentPopup,
     WrapperHeader,
     WrapperHeaderRightItem,
     WrapperTextHeader,
@@ -14,17 +15,39 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from "../../services/UserService";
+import { resetUser } from "../../redux/slides/userSlide";
+import Loading from "../LoadingComponent/LoadingComponent";
 
 const HeaderComponent = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const [pending, setPending] = useState(false);
     const handleNavigateSignin = () => {
         navigate("/sign-in");
     };
     // const handleNavigateHome = () => {
     //     navigate("/");
     // };
+
+    const handleLogout = async () => {
+        setPending(true);
+        await UserService.logoutUser();
+        localStorage.removeItem("access_token");
+        dispatch(resetUser());
+        setPending(false);
+    };
+
+    const content = (
+        <div>
+            <WrapperContentPopup>User information</WrapperContentPopup>
+            <WrapperContentPopup onClick={handleLogout}>
+                Logout
+            </WrapperContentPopup>
+        </div>
+    );
 
     return (
         <WrapperContainerHeader>
@@ -47,27 +70,35 @@ const HeaderComponent = () => {
                     span={6}
                     style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                    <WrapperHeaderRightItem>
-                        <UserOutlined style={{ fontSize: "30px" }} />
-                        {user?.name ? (
-                            <div style={{ cursor: "pointer" }}>{user.name}</div>
-                        ) : (
-                            <div
-                                onClick={handleNavigateSignin}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <WrapperTextHeaderSmall>
-                                    Sign in / Sign up
-                                </WrapperTextHeaderSmall>
-                                <div>
-                                    <span style={{ paddingRight: "4px" }}>
-                                        Account
-                                    </span>
-                                    <CaretDownOutlined />
+                    <Loading isPending={pending}>
+                        <WrapperHeaderRightItem>
+                            <UserOutlined style={{ fontSize: "30px" }} />
+                            {user?.name ? (
+                                <>
+                                    <Popover content={content} trigger="click">
+                                        <div style={{ cursor: "pointer" }}>
+                                            {user.name}
+                                        </div>
+                                    </Popover>
+                                </>
+                            ) : (
+                                <div
+                                    onClick={handleNavigateSignin}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <WrapperTextHeaderSmall>
+                                        Sign in / Sign up
+                                    </WrapperTextHeaderSmall>
+                                    <div>
+                                        <span style={{ paddingRight: "4px" }}>
+                                            Account
+                                        </span>
+                                        <CaretDownOutlined />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </WrapperHeaderRightItem>
+                            )}
+                        </WrapperHeaderRightItem>
+                    </Loading>
                     <WrapperHeaderRightItem>
                         <Badge count={3} size="small">
                             <ShoppingCartOutlined
