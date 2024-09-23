@@ -1,14 +1,19 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import * as UserService from "./services/UserService";
 import { isJsonString } from "./utils";
 import { jwtDecode } from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
+import Loading from "./components/LoadingComponent/LoadingComponent";
 
 function App() {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
+    const [isPending, setIsPending] = useState(false);
+
     useEffect(() => {
         // Kiểm tra và xóa access_token nếu không có refresh_token
         const refreshToken = getCookie("refresh_token");
@@ -16,11 +21,14 @@ function App() {
             localStorage.removeItem("access_token");
         }
 
+        setIsPending(true);
+
         const { storageData, decoded } = handleDecoded();
-        console.log("handleDecoded: ", storageData, decoded);
         if (decoded?.id) {
             handleGetDetailsUser(decoded?.id, storageData);
         }
+
+        setIsPending(false);
     }, []);
 
     // Hàm lấy cookie
@@ -58,8 +66,6 @@ function App() {
         }
     );
 
-    const dispatch = useDispatch();
-
     const handleGetDetailsUser = async (id, token) => {
         const res = await UserService.getDetailsUser(id, token);
         dispatch(updateUser({ ...res?.data, access_token: token }));
@@ -67,27 +73,31 @@ function App() {
 
     return (
         <div>
-            <Router>
-                <Routes>
-                    {routes.map((route, index) => {
-                        const Page = route.page;
-                        const Layout = route.isShowHeader
-                            ? DefaultComponent
-                            : Fragment;
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
-            </Router>
+            <Loading isPending={isPending}>
+                <Router>
+                    <Routes>
+                        {routes.map((route, index) => {
+                            const Page = route.page;
+                            const isCheckAuth =
+                                !route.isPrivate || user.isAdmin;
+                            const Layout = route.isShowHeader
+                                ? DefaultComponent
+                                : Fragment;
+                            return (
+                                <Route
+                                    key={index}
+                                    path={isCheckAuth ? route.path : undefined}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
+                </Router>
+            </Loading>
         </div>
     );
 }

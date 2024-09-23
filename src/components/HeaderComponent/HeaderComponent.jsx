@@ -20,13 +20,17 @@ import * as UserService from "../../services/UserService";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/LoadingComponent";
 
-const HeaderComponent = () => {
+const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const [userName, setUserName] = useState("");
     const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
+
+    const handleNavigateHome = () => {
+        navigate("/");
+    };
 
     const handleNavigateSignin = () => {
         navigate("/sign-in");
@@ -36,9 +40,9 @@ const HeaderComponent = () => {
         navigate("/profile-user");
     };
 
-    // const handleNavigateHome = () => {
-    //     navigate("/");
-    // };
+    const handleNavigateAdmin = () => {
+        navigate("/system/admin");
+    };
 
     const handleLogout = async () => {
         setPending(true);
@@ -58,6 +62,11 @@ const HeaderComponent = () => {
 
     const content = (
         <div>
+            {user?.isAdmin && (
+                <WrapperContentPopup onClick={handleNavigateAdmin}>
+                    System management
+                </WrapperContentPopup>
+            )}
             <WrapperContentPopup onClick={handleNavigateProfile}>
                 User information
             </WrapperContentPopup>
@@ -69,21 +78,32 @@ const HeaderComponent = () => {
 
     return (
         <WrapperContainerHeader>
-            <WrapperHeader>
+            <WrapperHeader
+                style={{
+                    justifyContent:
+                        isHiddenSearch && isHiddenCart
+                            ? "space-between"
+                            : "unset",
+                }}
+            >
                 <Col span={5}>
-                    <WrapperTextHeader>TechStore</WrapperTextHeader>
+                    <WrapperTextHeader onClick={handleNavigateHome}>
+                        TechStore
+                    </WrapperTextHeader>
                 </Col>
-                <Col span={13}>
-                    <ButtonInputSearch
-                        size="large"
-                        placeholder="input search text"
-                        textButton="Search"
-                        bordered="none"
-                        backgroundColorButton="#4096ff"
-                        colorButton="#fff"
-                        // onSearch={onSearch}
-                    />
-                </Col>
+                {!isHiddenSearch && (
+                    <Col span={13}>
+                        <ButtonInputSearch
+                            size="large"
+                            placeholder="input search text"
+                            textButton="Search"
+                            bordered="none"
+                            backgroundColorButton="#4096ff"
+                            colorButton="#fff"
+                            // onSearch={onSearch}
+                        />
+                    </Col>
+                )}
                 <Col
                     span={6}
                     style={{ display: "flex", justifyContent: "space-between" }}
@@ -132,21 +152,18 @@ const HeaderComponent = () => {
                             )}
                         </WrapperHeaderRightItem>
                     </Loading>
-                    <WrapperHeaderRightItem>
-                        <Badge count={3} size="small">
-                            <ShoppingCartOutlined
-                                style={{ fontSize: "35px", color: "#fff" }}
-                            />
-                        </Badge>
-                        <WrapperTextHeaderSmall
-                            style={{
-                                alignSelf: "flex-end",
-                                paddingBottom: "4px",
-                            }}
-                        >
-                            Shopping Cart
-                        </WrapperTextHeaderSmall>
-                    </WrapperHeaderRightItem>
+                    {!isHiddenCart && (
+                        <WrapperHeaderRightItem>
+                            <Badge count={3} size="small">
+                                <ShoppingCartOutlined
+                                    style={{ fontSize: "35px", color: "#fff" }}
+                                />
+                            </Badge>
+                            <WrapperTextHeaderSmall>
+                                Shopping Cart
+                            </WrapperTextHeaderSmall>
+                        </WrapperHeaderRightItem>
+                    )}
                 </Col>
             </WrapperHeader>
         </WrapperContainerHeader>

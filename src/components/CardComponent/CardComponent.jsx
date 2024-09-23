@@ -9,7 +9,18 @@ import {
     WrapperStyleTextSell,
 } from "./style";
 
-const CardComponent = () => {
+const CardComponent = (props) => {
+    const {
+        countInStock,
+        description,
+        image,
+        name,
+        price,
+        rating,
+        type,
+        selled,
+        discount,
+    } = props;
     return (
         <WrapperCardStyle
             hoverable
@@ -21,10 +32,10 @@ const CardComponent = () => {
                 />
             }
         >
-            <StyleNameProduct>Samsung Galaxy S24 Ultra</StyleNameProduct>
+            <StyleNameProduct>{name}</StyleNameProduct>
             <WrapperReportText>
                 <span>
-                    <span>4.8</span>
+                    <span>{rating}</span>
                     <StarFilled
                         style={{
                             fontSize: "1.2rem",
@@ -33,11 +44,13 @@ const CardComponent = () => {
                         }}
                     />
                 </span>
-                <WrapperStyleTextSell>| Sold 1000+</WrapperStyleTextSell>
+                <WrapperStyleTextSell>
+                    | Sold {selled || 1000}+
+                </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
-                <span style={{ marginRight: "3px" }}>29.990.000đ</span>
-                <WrapperDiscountText>-5%</WrapperDiscountText>
+                <span style={{ marginRight: "3px" }}>{price}</span>
+                <WrapperDiscountText>{discount || 5}%</WrapperDiscountText>
             </WrapperPriceText>
         </WrapperCardStyle>
     );

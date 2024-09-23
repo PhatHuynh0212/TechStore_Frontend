@@ -13,9 +13,26 @@ import slider3 from "../../assets/images/slider3.webp";
 import slider4 from "../../assets/images/slider4.webp";
 import slider5 from "../../assets/images/slider5.webp";
 import CardComponent from "../../components/CardComponent/CardComponent";
+import { useQuery } from "@tanstack/react-query";
+import * as ProductService from "../../services/ProductService";
+import Loading from "../../components/LoadingComponent/LoadingComponent";
 
 const HomePage = () => {
     const arr = ["Cellphone", "Tablet", "Laptop", "PC"];
+    const fetchProductAll = async () => {
+        const res = await ProductService.getAllProduct();
+        return res;
+    };
+    const { isPending, data: products } = useQuery({
+        queryKey: ["products"],
+        queryFn: fetchProductAll,
+        queryRetry: {
+            retry: 3,
+            retryDelay: 1000,
+        },
+    });
+    console.log(isPending);
+
     return (
         <>
             <div style={{ width: "1270px", margin: "0 auto" }}>
@@ -46,17 +63,26 @@ const HomePage = () => {
                             slider5,
                         ]}
                     />
-                    <WrapperProduct>
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                        <CardComponent />
-                    </WrapperProduct>
+                    <Loading isPending={isPending}>
+                        <WrapperProduct>
+                            {products?.data.map((product) => {
+                                return (
+                                    <CardComponent
+                                        key={product._id}
+                                        countInStock={product.countInStock}
+                                        description={product.description}
+                                        image={product.image}
+                                        name={product.name}
+                                        price={product.price}
+                                        rating={product.rating}
+                                        type={product.type}
+                                        selled={product.selled}
+                                        discount={product.discount}
+                                    />
+                                );
+                            })}
+                        </WrapperProduct>
+                    </Loading>
                     <WrapperButtonShow>
                         <WrapperButtonHover
                             textButton="Show more"
