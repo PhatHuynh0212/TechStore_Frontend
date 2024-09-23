@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge, Col, Popover } from "antd";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import {
@@ -23,11 +23,19 @@ import Loading from "../LoadingComponent/LoadingComponent";
 const HeaderComponent = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
+    const [userName, setUserName] = useState("");
+    const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
+
     const handleNavigateSignin = () => {
         navigate("/sign-in");
     };
+
+    const handleNavigateProfile = () => {
+        navigate("/profile-user");
+    };
+
     // const handleNavigateHome = () => {
     //     navigate("/");
     // };
@@ -38,11 +46,21 @@ const HeaderComponent = () => {
         localStorage.removeItem("access_token");
         dispatch(resetUser());
         setPending(false);
+        navigate("/");
     };
+
+    useEffect(() => {
+        setPending(true);
+        setUserName(user?.name);
+        setUserAvatar(user?.avatar);
+        setPending(false);
+    }, [user?.name, user?.avatar]);
 
     const content = (
         <div>
-            <WrapperContentPopup>User information</WrapperContentPopup>
+            <WrapperContentPopup onClick={handleNavigateProfile}>
+                User information
+            </WrapperContentPopup>
             <WrapperContentPopup onClick={handleLogout}>
                 Logout
             </WrapperContentPopup>
@@ -72,12 +90,27 @@ const HeaderComponent = () => {
                 >
                     <Loading isPending={pending}>
                         <WrapperHeaderRightItem>
-                            <UserOutlined style={{ fontSize: "30px" }} />
-                            {user?.name ? (
+                            {userAvatar ? (
+                                <img
+                                    src={userAvatar}
+                                    style={{
+                                        height: "40px",
+                                        width: "40px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                    }}
+                                    alt="userAvatar"
+                                />
+                            ) : (
+                                <UserOutlined style={{ fontSize: "30px" }} />
+                            )}
+                            {user?.access_token ? (
                                 <>
                                     <Popover content={content} trigger="click">
                                         <div style={{ cursor: "pointer" }}>
-                                            {user.name}
+                                            {userName?.length
+                                                ? userName
+                                                : user?.email}
                                         </div>
                                     </Popover>
                                 </>

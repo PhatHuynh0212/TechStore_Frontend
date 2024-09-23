@@ -10,11 +10,26 @@ import { updateUser } from "./redux/slides/userSlide";
 
 function App() {
     useEffect(() => {
+        // Kiểm tra và xóa access_token nếu không có refresh_token
+        const refreshToken = getCookie("refresh_token");
+        if (!refreshToken) {
+            localStorage.removeItem("access_token");
+        }
+
         const { storageData, decoded } = handleDecoded();
+        console.log("handleDecoded: ", storageData, decoded);
         if (decoded?.id) {
             handleGetDetailsUser(decoded?.id, storageData);
         }
     }, []);
+
+    // Hàm lấy cookie
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return null;
+    };
 
     const handleDecoded = () => {
         let storageData = localStorage.getItem("access_token");

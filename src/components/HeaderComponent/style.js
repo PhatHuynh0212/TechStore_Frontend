@@ -37,7 +37,6 @@ export const WrapperHeaderRightItem = styled.div`
 export const WrapperContentPopup = styled.p`
     cursor: pointer;
     &:hover {
-        background: orange;
-        color: #fff;
+        color: #1a94ff;
     }
 `;

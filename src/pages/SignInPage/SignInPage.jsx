@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     WrapperContainerLeft,
     WrapperContainerRight,
@@ -30,9 +30,17 @@ const SignInPage = () => {
     const mutation = useMutationHooks((data) => UserService.loginUser(data));
     const { data, isPending, isSuccess } = mutation;
 
+    const handleGetDetailsUser = useCallback(
+        async (id, token) => {
+            const res = await UserService.getDetailsUser(id, token);
+            dispatch(updateUser({ ...res?.data, access_token: token }));
+        },
+        [dispatch]
+    );
+
     useEffect(() => {
         if (isSuccess) {
-            navigate("/");
+            navigate("/"); // Điều hướng về trang chủ
             localStorage.setItem(
                 "access_token",
                 JSON.stringify(data?.access_token)
@@ -44,12 +52,28 @@ const SignInPage = () => {
                 }
             }
         }
-    }, [isSuccess]);
+    }, [isSuccess, data?.access_token, navigate, handleGetDetailsUser]);
 
-    const handleGetDetailsUser = async (id, token) => {
-        const res = await UserService.getDetailsUser(id, token);
-        dispatch(updateUser({ ...res?.data, access_token: token }));
-    };
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         navigate("/");
+    //         localStorage.setItem(
+    //             "access_token",
+    //             JSON.stringify(data?.access_token)
+    //         );
+    //         if (data?.access_token) {
+    //             const decoded = jwtDecode(data?.access_token);
+    //             if (decoded?.id) {
+    //                 handleGetDetailsUser(decoded?.id, data?.access_token);
+    //             }
+    //         }
+    //     }
+    // }, [isSuccess]);
+
+    // const handleGetDetailsUser = async (id, token) => {
+    //     const res = await UserService.getDetailsUser(id, token);
+    //     dispatch(updateUser({ ...res?.data, access_token: token }));
+    // };
 
     const handleNavigateSignUp = () => {
         navigate("/sign-up");
