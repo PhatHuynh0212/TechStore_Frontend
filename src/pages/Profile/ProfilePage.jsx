@@ -55,7 +55,7 @@ const ProfilePage = () => {
         if (isSuccess) {
             Message.success();
             handleGetDetailsUser(user?.id, user?.access_token);
-        } else if (isError === false) {
+        } else if (isError) {
             Message.error();
         }
     }, [

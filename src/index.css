@@ -12,3 +12,8 @@ html {
     font-size: 62.5%;
     /* 1rem = 10px */
 }
+
+.tsqd-open-btn-container {
+    left: 12px !important;
+    right: auto !important;
+}

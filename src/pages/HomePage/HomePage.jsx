@@ -23,7 +23,7 @@ const HomePage = () => {
         const res = await ProductService.getAllProduct();
         return res;
     };
-    const { isPending, data: products } = useQuery({
+    const { isLoading, data: products } = useQuery({
         queryKey: ["products"],
         queryFn: fetchProductAll,
         queryRetry: {
@@ -31,7 +31,6 @@ const HomePage = () => {
             retryDelay: 1000,
         },
     });
-    console.log(isPending);
 
     return (
         <>
@@ -63,7 +62,7 @@ const HomePage = () => {
                             slider5,
                         ]}
                     />
-                    <Loading isPending={isPending}>
+                    <Loading isPending={isLoading}>
                         <WrapperProduct>
                             {products?.data.map((product) => {
                                 return (
