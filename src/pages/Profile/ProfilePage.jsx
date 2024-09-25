@@ -55,7 +55,7 @@ const ProfilePage = () => {
         if (isSuccess) {
             Message.success();
             handleGetDetailsUser(user?.id, user?.access_token);
-        } else if (isError) {
+        } else if (isError === false) {
             Message.error();
         }
     }, [
@@ -65,20 +65,6 @@ const ProfilePage = () => {
         user?.id,
         user?.access_token,
     ]);
-
-    // useEffect(() => {
-    //     if (isSuccess) {
-    //         Message.success();
-    //         handleGetDetailsUser(user?.id, user?.access_token);
-    //     } else if (isError) {
-    //         Message.error();
-    //     }
-    // }, [isSuccess, isError]);
-
-    // const handleGetDetailsUser = async (id, token) => {
-    //     const res = await UserService.getDetailsUser(id, token);
-    //     dispatch(updateUser({ ...res?.data, access_token: token }));
-    // };
 
     const handleOnChangeName = (value) => {
         setName(value);
