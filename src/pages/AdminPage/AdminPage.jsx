@@ -37,6 +37,7 @@ const AdminPage = () => {
                     mode="inline"
                     style={{
                         width: "15%",
+                        height: "100vh",
                         boxShadow: "1px 1px 2px #ccc",
                     }}
                     items={items}

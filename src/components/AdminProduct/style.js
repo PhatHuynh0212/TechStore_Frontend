@@ -29,9 +29,10 @@ export const WrapperFormUpload = styled(Form.Item)`
     & .ant-row {
         align-items: center;
     }
-    & #basic_image {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
+`;
+
+export const WrapperUploadInput = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
 `;

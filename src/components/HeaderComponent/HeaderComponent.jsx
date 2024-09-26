@@ -22,7 +22,7 @@ import Loading from "../LoadingComponent/LoadingComponent";
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => state?.user);
     const [userName, setUserName] = useState("");
     const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();

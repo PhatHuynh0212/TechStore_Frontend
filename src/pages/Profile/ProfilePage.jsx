@@ -19,7 +19,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../utils";
 
 const ProfilePage = () => {
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => state?.user);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
