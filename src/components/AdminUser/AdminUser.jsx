@@ -27,7 +27,7 @@ import * as UserService from "../../services/UserService";
 import { useSelector } from "react-redux";
 
 const AdminUser = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
     const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
@@ -35,19 +35,20 @@ const AdminUser = () => {
     const user = useSelector((state) => state?.user);
     const [form] = Form.useForm();
 
-    const [stateUser, setStateUser] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        isAdmin: false,
-    });
+    // const [stateUser, setStateUser] = useState({
+    //     name: "",
+    //     email: "",
+    //     password: "",
+    //     confirmPassword: "",
+    //     isAdmin: false,
+    // });
     const [stateUserDetails, setStateUserDetails] = useState({
         name: "",
         email: "",
         address: "",
         phone: "",
         isAdmin: false,
+        avatar: "",
     });
 
     // Call API
@@ -78,7 +79,6 @@ const AdminUser = () => {
 
     const getAllUser = async () => {
         const res = await UserService.getAllUser();
-        console.log("res: ", res);
         return res;
     };
 
@@ -91,6 +91,7 @@ const AdminUser = () => {
                 phone: res?.data?.phone,
                 address: res?.data?.address,
                 isAdmin: res?.data?.isAdmin,
+                avatar: res?.data?.avatar,
             });
         }
         setIsLoadingUpdate(false);
@@ -102,10 +103,10 @@ const AdminUser = () => {
     }, [form, stateUserDetails]);
 
     useEffect(() => {
-        if (rowSelected) {
+        if (rowSelected && isOpenDrawer) {
             fetchGetDetailsUser(rowSelected);
         }
-    }, [rowSelected]);
+    }, [rowSelected, isOpenDrawer]);
 
     const renderAction = () => {
         return (
@@ -134,6 +135,12 @@ const AdminUser = () => {
         setIsOpenDrawer(true);
     };
 
+    const mutationDeleteMany = useMutationHooks((data) => {
+        const { token, ...ids } = data;
+        const res = UserService.deleteManyUser(ids, token);
+        return res;
+    });
+
     // const { data, isPending, isSuccess, isError } = mutationCreate;
     const {
         data: dataUpdated,
@@ -147,6 +154,12 @@ const AdminUser = () => {
         isSuccess: isSuccessDeleted,
         isError: isErrorDeleted,
     } = mutationDelete;
+    const {
+        data: dataDeletedMany,
+        isPending: isPendingDeletedMany,
+        isSuccess: isSuccessDeletedMany,
+        isError: isErrorDeletedMany,
+    } = mutationDeleteMany;
 
     const queryUser = useQuery({
         queryKey: ["user"],
@@ -164,17 +177,17 @@ const AdminUser = () => {
     //     }
     // }, [isSuccess, data?.status, isError]);
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setStateUser({
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            isAdmin: false,
-        });
-        form.resetFields();
-    };
+    // const handleCancel = () => {
+    //     setIsModalOpen(false);
+    //     setStateUser({
+    //         name: "",
+    //         email: "",
+    //         password: "",
+    //         confirmPassword: "",
+    //         isAdmin: false,
+    //     });
+    //     form.resetFields();
+    // };
 
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
@@ -203,6 +216,17 @@ const AdminUser = () => {
         );
     };
 
+    const handleDeleteManyUser = (ids) => {
+        mutationDeleteMany.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryUser.refetch();
+                },
+            }
+        );
+    };
+
     useEffect(() => {
         if (isSuccessUpdated && dataUpdated?.status === "OK") {
             Message.success();
@@ -221,6 +245,14 @@ const AdminUser = () => {
         }
     }, [isSuccessDeleted]);
 
+    useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === "OK") {
+            Message.success();
+        } else if (isErrorDeletedMany) {
+            Message.error();
+        }
+    }, [isSuccessDeletedMany]);
+
     // const onFinish = () => {
     //     mutationCreate.mutate(stateUser, {
     //         onSettled: () => {
@@ -229,12 +261,12 @@ const AdminUser = () => {
     //     });
     // };
 
-    const handleOnChange = (e) => {
-        setStateUser({
-            ...stateUser,
-            [e.target.name]: e.target.value,
-        });
-    };
+    // const handleOnChange = (e) => {
+    //     setStateUser({
+    //         ...stateUser,
+    //         [e.target.name]: e.target.value,
+    //     });
+    // };
 
     const handleOnChangeDetails = (e) => {
         setStateUserDetails({
@@ -254,16 +286,16 @@ const AdminUser = () => {
     //     });
     // };
 
-    // const handleOnChangeAvatarDetails = async ({ fileList }) => {
-    //     const file = fileList[0];
-    //     if (!file.url && !file.preview) {
-    //         file.preview = await getBase64(file.originFileObj);
-    //     }
-    //     setStateUserDetails({
-    //         ...stateUserDetails,
-    //         image: file.preview,
-    //     });
-    // };
+    const handleOnChangeAvatarDetails = async ({ fileList }) => {
+        const file = fileList[0];
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setStateUserDetails({
+            ...stateUserDetails,
+            avatar: file.preview,
+        });
+    };
 
     const onUpdateUser = () => {
         mutationUpdate.mutate(
@@ -451,6 +483,7 @@ const AdminUser = () => {
             </WrapperButtonAdd> */}
             <div>
                 <TableComponent
+                    handleDeleteMany={handleDeleteManyUser}
                     columns={columns}
                     data={dataTable}
                     isPending={isLoading}
@@ -720,13 +753,13 @@ const AdminUser = () => {
                             />
                         </Form.Item>
 
-                        {/* <WrapperFormUpload
-                            label="Image"
-                            name="image"
+                        <WrapperFormUpload
+                            label="Avatar"
+                            name="avatar"
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please input your image!",
+                                    message: "Please input your avatar!",
                                 },
                             ]}
                         >
@@ -739,9 +772,9 @@ const AdminUser = () => {
                                         Select File
                                     </Button>
                                 </WrapperUploadFile>
-                                {stateUserDetails?.image && (
+                                {stateUserDetails?.avatar && (
                                     <img
-                                        src={stateUserDetails?.image}
+                                        src={stateUserDetails?.avatar}
                                         style={{
                                             height: "60px",
                                             width: "60px",
@@ -753,7 +786,7 @@ const AdminUser = () => {
                                     />
                                 )}
                             </WrapperUploadInput>
-                        </WrapperFormUpload> */}
+                        </WrapperFormUpload>
 
                         <Form.Item
                             wrapperCol={{
