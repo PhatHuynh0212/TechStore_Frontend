@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-    WrapperButtonAdd,
     WrapperFormUpload,
     WrapperHeader,
     WrapperUploadFile,
@@ -9,7 +8,6 @@ import {
 import {
     DeleteOutlined,
     EditTwoTone,
-    PlusOutlined,
     SearchOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
