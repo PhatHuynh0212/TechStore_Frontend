@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Form, Upload } from "antd";
 import styled from "styled-components";
 
 export const WrapperHeader = styled.h1`
@@ -12,4 +12,27 @@ export const WrapperButtonAdd = styled(Button)`
     height: 140px;
     border-radius: 6px;
     border-style: dashed;
+`;
+
+export const WrapperUploadFile = styled(Upload)`
+    & .ant-upload.ant-upload-select.antant-upload-select-picture-card {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+    & .ant-upload-list.ant-upload-list-text {
+        display: none;
+    }
+`;
+
+export const WrapperFormUpload = styled(Form.Item)`
+    & .ant-row {
+        align-items: center;
+    }
+`;
+
+export const WrapperUploadInput = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
 `;
