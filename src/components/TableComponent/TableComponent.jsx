@@ -2,6 +2,7 @@ import { Divider, Dropdown, Space, Table } from "antd";
 import React, { useState } from "react";
 import Loading from "../LoadingComponent/LoadingComponent";
 import { DownOutlined } from "@ant-design/icons";
+import * as XLSX from "xlsx";
 
 const TableComponent = (props) => {
     const [rowSelectedKeys, setRowSelectedKeys] = useState([]);
@@ -18,11 +19,6 @@ const TableComponent = (props) => {
             setRowSelectedKeys(selectedRowKeys);
             console.log(`selectedRowKeys: ${selectedRowKeys}`);
         },
-        // getCheckboxProps: (record) => ({
-        //     disabled: record.name === "Disabled User",
-        //     // Column configuration not to be checked
-        //     name: record.name,
-        // }),
     };
 
     const handleDeleteAll = () => {
@@ -35,6 +31,36 @@ const TableComponent = (props) => {
             label: <span onClick={handleDeleteAll}>Delete many</span>,
         },
     ];
+
+    // Danh sách các cột cần loại bỏ
+    const excludedColumns = [
+        "image",
+        "createdAt",
+        "updatedAt",
+        "__v",
+        "key",
+        "avatar",
+    ];
+
+    // Hàm lọc bỏ các cột không mong muốn
+    const filterColumns = (data) => {
+        return data.map((row) => {
+            return Object.fromEntries(
+                Object.entries(row).filter(
+                    ([key, value]) => !excludedColumns.includes(key)
+                )
+            );
+        });
+    };
+
+    // Hàm export dữ liệu ra Excel
+    const exportToExcel = () => {
+        const filteredData = filterColumns(data); // Lọc dữ liệu
+        const ws = XLSX.utils.json_to_sheet(filteredData); // Chuyển dữ liệu đã lọc sang sheet
+        const wb = XLSX.utils.book_new(); // Tạo workbook mới
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); // Thêm sheet vào workbook
+        XLSX.writeFile(wb, "filtered_table_data.xlsx"); // Xuất file Excel
+    };
 
     return (
         <div>
@@ -66,6 +92,11 @@ const TableComponent = (props) => {
                     dataSource={data}
                     {...props}
                 />
+
+                {/* Nút Export Excel */}
+                <div style={{ marginTop: "20px" }}>
+                    <button onClick={exportToExcel}>Export to Excel</button>
+                </div>
             </Loading>
         </div>
     );
