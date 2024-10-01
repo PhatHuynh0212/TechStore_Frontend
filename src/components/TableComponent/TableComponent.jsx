@@ -2,7 +2,8 @@ import { Divider, Dropdown, Space, Table } from "antd";
 import React, { useState } from "react";
 import Loading from "../LoadingComponent/LoadingComponent";
 import { DownOutlined } from "@ant-design/icons";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 const TableComponent = (props) => {
     const [rowSelectedKeys, setRowSelectedKeys] = useState([]);
@@ -54,12 +55,30 @@ const TableComponent = (props) => {
     };
 
     // Hàm export dữ liệu ra Excel
-    const exportToExcel = () => {
+    const exportToExcel = async () => {
         const filteredData = filterColumns(data); // Lọc dữ liệu
-        const ws = XLSX.utils.json_to_sheet(filteredData); // Chuyển dữ liệu đã lọc sang sheet
-        const wb = XLSX.utils.book_new(); // Tạo workbook mới
-        XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); // Thêm sheet vào workbook
-        XLSX.writeFile(wb, "filtered_table_data.xlsx"); // Xuất file Excel
+        const workbook = new ExcelJS.Workbook(); // Tạo workbook mới
+        const worksheet = workbook.addWorksheet("Sheet1"); // Thêm sheet vào workbook
+
+        // Thêm hàng tiêu đề (header) vào sheet
+        if (filteredData.length > 0) {
+            worksheet.columns = Object.keys(filteredData[0]).map((key) => ({
+                header: key,
+                key: key,
+            }));
+
+            // Thêm dữ liệu vào sheet
+            filteredData.forEach((row) => {
+                worksheet.addRow(row);
+            });
+        }
+
+        // Tạo file Excel dưới dạng blob và tải về
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "filtered_table_data.xlsx"); // Sử dụng file-saver để tải file
     };
 
     return (
