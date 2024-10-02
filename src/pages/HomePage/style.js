@@ -17,6 +17,7 @@ export const WrapperButtonHover = styled(ButtonComponent)`
             color: #fff;
         }
     }
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 `;
 
 export const WrapperProduct = styled.div`

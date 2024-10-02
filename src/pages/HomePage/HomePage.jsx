@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import {
     WrapperButtonHover,
@@ -22,43 +22,28 @@ import { useDebounce } from "../../hooks/useDebounce";
 const HomePage = () => {
     const searchProduct = useSelector((state) => state?.product?.search);
     const searchDebounce = useDebounce(searchProduct, 0);
-    const refSearch = useRef();
-    const [stateProducts, setStateProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    // Số lượng product hiển thị ở Trang Chủ
+    const [limit, setLimit] = useState(5);
     const arr = ["Cellphone", "Tablet", "Laptop", "PC"];
-    const fetchProductAll = async (search) => {
-        const res = await ProductService.getAllProduct(search);
-        if (search?.length > 0 || refSearch.current) {
-            setStateProducts(res?.data);
-            return [];
-        } else {
-            return res;
-        }
+
+    const fetchProductAll = async (context) => {
+        const limit = context?.queryKey ? context?.queryKey[1] : 5;
+        const search = context?.queryKey ? context?.queryKey[2] : 5;
+        const res = await ProductService.getAllProduct(search, limit);
+        return res;
     };
 
-    useEffect(() => {
-        if (refSearch.current) {
-            setLoading(true);
-            fetchProductAll(searchDebounce);
-        }
-        refSearch.current = true;
-        setLoading(false);
-    }, [searchDebounce]);
-
-    const { isLoading, data: products } = useQuery({
-        queryKey: ["products"],
+    const query = useQuery({
+        queryKey: ["products", limit, searchDebounce],
         queryFn: fetchProductAll,
-        queryRetry: {
-            retry: 3,
-            retryDelay: 1000,
-        },
+        retry: 3,
+        retryDelay: 1000,
     });
+    const { isLoading, data: products } = query;
 
-    useEffect(() => {
-        if (products?.data?.length > 0) {
-            setStateProducts(products?.data);
-        }
-    }, [products]);
+    // Check load all product
+    const allProductsLoaded = products?.data?.length >= products?.totalProduct;
 
     return (
         <Loading isPending={isLoading || loading}>
@@ -91,10 +76,11 @@ const HomePage = () => {
                         ]}
                     />
                     <WrapperProduct>
-                        {stateProducts?.map((product) => {
+                        {products?.data?.map((product) => {
                             return (
                                 <CardComponent
                                     key={product._id}
+                                    id={product._id}
                                     countInStock={product.countInStock}
                                     description={product.description}
                                     image={product.image}
@@ -110,7 +96,10 @@ const HomePage = () => {
                     </WrapperProduct>
                     <WrapperButtonShow>
                         <WrapperButtonHover
-                            textButton="Show more"
+                            disabled={
+                                allProductsLoaded || products?.totalPage === 1
+                            }
+                            textButton="Load more"
                             type="outline"
                             styleButton={{
                                 width: "240px",
@@ -121,6 +110,7 @@ const HomePage = () => {
                                 fontSize: "1.6rem",
                                 fontWeight: "500",
                             }}
+                            onClick={() => setLimit((prev) => prev + 5)}
                         />
                     </WrapperButtonShow>
                 </div>
