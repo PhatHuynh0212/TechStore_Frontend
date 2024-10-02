@@ -4,39 +4,40 @@ import InputComponent from "../InputComponent/InputComponent";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 
 const ButtonInputSearch = (props) => {
-    const {
-        size,
-        placeholder,
-        textButton,
-        bordered,
-        backgroundColorInput = "#fff",
-        backgroundColorButton = "#fff",
-        colorButton = "#333",
-    } = props;
+    // const {
+    //     size,
+    //     placeholder,
+    //     textButton,
+    //     bordered,
+    //     backgroundColorInput = "#fff",
+    //     backgroundColorButton = "#fff",
+    // } = props;
 
     return (
         <div style={{ display: "flex" }}>
             <InputComponent
-                size={size}
-                placeholder={placeholder}
+                size="large"
+                placeholder="input search text"
                 allowClear
                 style={{
                     width: "550px",
-                    border: bordered,
-                    background: backgroundColorInput,
+                    border: "none",
+                    background: "#fff",
                     borderRadius: "6px 0 0 6px",
                 }}
+                {...props}
             />
             <ButtonComponent
-                size={size}
+                size="large"
                 icon={<SearchOutlined />}
                 styleButton={{
-                    border: bordered,
-                    color: colorButton,
-                    background: backgroundColorButton,
+                    border: "none",
+                    color: "#fff",
+                    background: "#4096ff",
                     borderRadius: "0 6px 6px 0",
                 }}
-                textButton={textButton}
+                textButton="Search"
+                {...props}
             />
         </div>
     );

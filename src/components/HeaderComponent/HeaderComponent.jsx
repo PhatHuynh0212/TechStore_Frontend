@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../services/UserService";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/LoadingComponent";
+import { searchProduct } from "../../redux/slides/productSlide";
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate();
@@ -27,6 +28,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
+    const [search, setSearch] = useState("");
 
     const handleNavigateHome = () => {
         navigate("/");
@@ -76,6 +78,11 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         </div>
     );
 
+    const onSearch = (e) => {
+        setSearch(e.target.value);
+        dispatch(searchProduct(e.target.value));
+    };
+
     return (
         <WrapperContainerHeader>
             <WrapperHeader
@@ -93,15 +100,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 </Col>
                 {!isHiddenSearch && (
                     <Col span={13}>
-                        <ButtonInputSearch
-                            size="large"
-                            placeholder="input search text"
-                            textButton="Search"
-                            bordered="none"
-                            backgroundColorButton="#4096ff"
-                            colorButton="#fff"
-                            // onSearch={onSearch}
-                        />
+                        <ButtonInputSearch onChange={onSearch} />
                     </Col>
                 )}
                 <Col

@@ -29,6 +29,7 @@ const CardComponent = (props) => {
                 <img
                     alt="example"
                     src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-xam-222.png"
+                    style={{ width: "99%" }}
                 />
             }
         >

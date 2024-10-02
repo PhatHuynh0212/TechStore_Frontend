@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import {
     WrapperButtonHover,
@@ -16,13 +16,35 @@ import CardComponent from "../../components/CardComponent/CardComponent";
 import { useQuery } from "@tanstack/react-query";
 import * as ProductService from "../../services/ProductService";
 import Loading from "../../components/LoadingComponent/LoadingComponent";
+import { useSelector } from "react-redux";
+import { useDebounce } from "../../hooks/useDebounce";
 
 const HomePage = () => {
+    const searchProduct = useSelector((state) => state?.product?.search);
+    const searchDebounce = useDebounce(searchProduct, 0);
+    const refSearch = useRef();
+    const [stateProducts, setStateProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
     const arr = ["Cellphone", "Tablet", "Laptop", "PC"];
-    const fetchProductAll = async () => {
-        const res = await ProductService.getAllProduct();
-        return res;
+    const fetchProductAll = async (search) => {
+        const res = await ProductService.getAllProduct(search);
+        if (search?.length > 0 || refSearch.current) {
+            setStateProducts(res?.data);
+            return [];
+        } else {
+            return res;
+        }
     };
+
+    useEffect(() => {
+        if (refSearch.current) {
+            setLoading(true);
+            fetchProductAll(searchDebounce);
+        }
+        refSearch.current = true;
+        setLoading(false);
+    }, [searchDebounce]);
+
     const { isLoading, data: products } = useQuery({
         queryKey: ["products"],
         queryFn: fetchProductAll,
@@ -32,8 +54,14 @@ const HomePage = () => {
         },
     });
 
+    useEffect(() => {
+        if (products?.data?.length > 0) {
+            setStateProducts(products?.data);
+        }
+    }, [products]);
+
     return (
-        <>
+        <Loading isPending={isLoading || loading}>
             <div style={{ width: "1270px", margin: "0 auto" }}>
                 <WrapperTypeProduct>
                     {arr.map((item) => {
@@ -62,26 +90,24 @@ const HomePage = () => {
                             slider5,
                         ]}
                     />
-                    <Loading isPending={isLoading}>
-                        <WrapperProduct>
-                            {products?.data.map((product) => {
-                                return (
-                                    <CardComponent
-                                        key={product._id}
-                                        countInStock={product.countInStock}
-                                        description={product.description}
-                                        image={product.image}
-                                        name={product.name}
-                                        price={product.price}
-                                        rating={product.rating}
-                                        type={product.type}
-                                        selled={product.selled}
-                                        discount={product.discount}
-                                    />
-                                );
-                            })}
-                        </WrapperProduct>
-                    </Loading>
+                    <WrapperProduct>
+                        {stateProducts?.map((product) => {
+                            return (
+                                <CardComponent
+                                    key={product._id}
+                                    countInStock={product.countInStock}
+                                    description={product.description}
+                                    image={product.image}
+                                    name={product.name}
+                                    price={product.price}
+                                    rating={product.rating}
+                                    type={product.type}
+                                    selled={product.selled}
+                                    discount={product.discount}
+                                />
+                            );
+                        })}
+                    </WrapperProduct>
                     <WrapperButtonShow>
                         <WrapperButtonHover
                             textButton="Show more"
@@ -99,7 +125,7 @@ const HomePage = () => {
                     </WrapperButtonShow>
                 </div>
             </div>
-        </>
+        </Loading>
     );
 };
 
