@@ -8,9 +8,11 @@ import {
     WrapperReportText,
     WrapperStyleTextSell,
 } from "./style";
+import { useNavigate } from "react-router";
 
 const CardComponent = (props) => {
     const {
+        id,
         countInStock,
         description,
         image,
@@ -21,17 +23,20 @@ const CardComponent = (props) => {
         selled,
         discount,
     } = props;
+
+    const navigate = useNavigate();
+    const handleDetailsProduct = (id) => {
+        navigate(`/product-details/${id}`);
+    };
+
     return (
         <WrapperCardStyle
             hoverable
             styles={{ body: { padding: "15px" } }}
             cover={
-                <img
-                    alt="example"
-                    src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-xam-222.png"
-                    style={{ width: "99%" }}
-                />
+                <img alt="image_product" src={image} style={{ width: "99%" }} />
             }
+            onClick={() => handleDetailsProduct(id)}
         >
             <StyleNameProduct>{name}</StyleNameProduct>
             <WrapperReportText>
@@ -50,8 +55,10 @@ const CardComponent = (props) => {
                 </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
-                <span style={{ marginRight: "3px" }}>{price}</span>
-                <WrapperDiscountText>{discount || 5}%</WrapperDiscountText>
+                <span style={{ marginRight: "3px" }}>
+                    {price.toLocaleString()} ₫
+                </span>
+                <WrapperDiscountText>- {discount || 5}%</WrapperDiscountText>
             </WrapperPriceText>
         </WrapperCardStyle>
     );

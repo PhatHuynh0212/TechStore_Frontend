@@ -32,6 +32,12 @@ export const WrapperPriceProduct = styled.div`
     border-radius: 5px;
 `;
 
+export const WrapperButton = styled.button`
+    background: transparent;
+    border: none;
+    cursor: pointer;
+`;
+
 export const WrapperPriceTextProduct = styled.h1`
     font-size: 3.2rem;
     line-height: 4rem;
@@ -77,5 +83,8 @@ export const WrapperInputNumber = styled(InputNumber)`
         border-radius: 0;
         border-top: none;
         border-bottom: none;
+    }
+    & .ant-input-number-handler-wrap {
+        display: none;
     }
 `;
