@@ -11,7 +11,8 @@ const ProductDetailsPage = () => {
             style={{
                 padding: "5px 120px",
                 background: "#efefef",
-                height: "1000px",
+                height: "100vh",
+                width: "100%",
             }}
         >
             <p style={{ margin: "5px 0" }}>

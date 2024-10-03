@@ -24,7 +24,7 @@ export const WrapperContent = styled(Row)`
 `;
 
 export const WrapperPagination = styled(Pagination)`
-    margin-top: 25px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
 `;

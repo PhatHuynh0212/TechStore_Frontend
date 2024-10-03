@@ -152,7 +152,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                         </WrapperHeaderRightItem>
                     </Loading>
                     {!isHiddenCart && (
-                        <WrapperHeaderRightItem>
+                        <WrapperHeaderRightItem
+                            onClick={() => navigate("/order")}
+                            style={{ cursor: "pointer" }}
+                        >
                             <Badge count={3} size="small">
                                 <ShoppingCartOutlined
                                     style={{ fontSize: "35px", color: "#fff" }}

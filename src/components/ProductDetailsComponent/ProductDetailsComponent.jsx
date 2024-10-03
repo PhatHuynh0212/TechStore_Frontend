@@ -42,7 +42,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
         enabled: !!idProduct,
     });
     const { isLoading, data: productDetails } = query;
-    console.log("productDetails: ", productDetails, idProduct);
 
     const handleChangeCount = (type) => {
         if (type === "increase") {
