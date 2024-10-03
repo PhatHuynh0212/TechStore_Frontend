@@ -14,58 +14,28 @@ export const WrapperCountOrder = styled.div`
     align-items: center;
     gap: 5px;
 `;
+
+export const WrapperPriceDiscount = styled.div`
+    padding-left: 7px;
+    color: grey;
+    text-decoration: line-through;
+`;
+
 export const WrapperLeft = styled.div`
     width: 100%;
     max-width: 90%;
     padding-right: 0px;
-    padding-left: 35px;
-    @media (max-width: 1024px) {
-        max-width: 60%;
-    }
-
-    @media (max-width: 768px) {
-        padding-right: 0;
-        max-width: 100%;
-    }
-
-    @media (max-width: 480px) {
-        max-width: 100%;
-        padding-right: 0;
-        margin-bottom: 10px;
-    }
 `;
 export const WrapperRight = styled.div`
-    margin-left: 770px;
     width: 100%;
     max-width: 30%;
-
-    @media (max-width: 1024px) {
-        max-width: 40%;
-        margin-left: 300px;
-    }
-
-    @media (max-width: 768px) {
-        max-width: 100%;
-        margin-left: 0;
-        margin-top: 20px;
-    }
-
-    @media (max-width: 480px) {
-        max-width: 100%;
-        margin-left: 0;
-        margin-top: 10px;
-    }
 `;
 
 export const ButtonContainer = styled.div`
     padding-top: 10px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     width: 100%;
-
-    @media (max-width: 768px) {
-        justify-content: end;
-    }
 `;
 
 export const StyledButton = styled.button`
@@ -78,38 +48,22 @@ export const StyledButton = styled.button`
     font-weight: 700;
     color: #fff;
     cursor: pointer;
-
-    @media (max-width: 768px) {
-        width: 180px;
-        height: 40px;
-        font-size: 14px;
-    }
-
-    @media (max-width: 480px) {
-        width: 160px;
-        height: 36px;
-        font-size: 13px;
-    }
 `;
 
 export const WrapperInfo = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0;
 `;
 
 export const WrapperItemOrder = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
-    @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px; /* Add this line */
-    }
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    background: #fff;
+    border-radius: 5px;
 `;
 
 export const WrapperListOrder = styled.div`
@@ -119,8 +73,9 @@ export const WrapperListOrder = styled.div`
 export const WrapperStyleHeader = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 10px 15px;
+    background: #fff;
+    border-radius: 5px;
 `;
 
 export const WrapperStyleHeaderDelivery = styled.div`
@@ -138,8 +93,4 @@ export const OrderContainer = styled.div`
     margin: 0 auto;
     padding: 20px;
     max-width: 1270px;
-
-    @media (max-width: 768px) {
-        padding: 10px;
-    }
 `;

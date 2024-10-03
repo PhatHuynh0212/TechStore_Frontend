@@ -18,11 +18,17 @@ import {
 } from "./style";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../LoadingComponent/LoadingComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
+import { addOrderProduct } from "../../redux/slides/orderSlide";
 
 const ProductDetailsComponent = ({ idProduct }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [numProduct, setNumProduct] = useState(1);
     const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
     const onChange = (e) => {
         setNumProduct(Number(e.target.value));
     };
@@ -50,6 +56,40 @@ const ProductDetailsComponent = ({ idProduct }) => {
             setNumProduct(numProduct - 1);
         }
     };
+
+    const handleAddOrderProduct = () => {
+        if (!user?.id) {
+            navigate("/sign-in", { state: location?.pathname });
+        } else {
+            // {
+            //     name: { type: String, required: true },
+            //     amount: { type: Number, required: true },
+            //     image: { type: String, required: true },
+            //     price: { type: Number, required: true },
+            //     product: {
+            //         type: mongoose.Schema.Types.ObjectId,
+            //         ref: "Product",
+            //         required: true,
+            //     },
+            // },
+            dispatch(
+                addOrderProduct({
+                    orderItem: {
+                        name: productDetails?.name,
+                        amount: numProduct,
+                        image: productDetails?.image,
+                        price: productDetails?.price,
+                        product: productDetails?._id,
+                        discount: productDetails?.discount,
+                        countInstock: productDetails?.countInStock,
+                        selled: productDetails?.selled,
+                    },
+                })
+            );
+        }
+    };
+
+    console.log(productDetails, user);
 
     return (
         <Loading isPending={isLoading}>
@@ -156,8 +196,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 />
                             </WrapperButton>
                             <WrapperInputNumber
+                                defaultValue={1}
                                 value={numProduct}
-                                onChange={onChange}
                             />
                             <WrapperButton
                                 onClick={() => handleChangeCount("increase")}
@@ -190,6 +230,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 borderRadius: "4px",
                             }}
                             textButton={"Add to cart"}
+                            onClick={handleAddOrderProduct}
                         />
                         <ButtonComponent
                             size={40}

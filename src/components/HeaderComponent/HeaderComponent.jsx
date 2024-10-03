@@ -24,11 +24,11 @@ import { searchProduct } from "../../redux/slides/productSlide";
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state?.user);
+    const order = useSelector((state) => state?.order);
     const [userName, setUserName] = useState("");
     const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
-    const [search, setSearch] = useState("");
 
     const handleNavigateHome = () => {
         navigate("/");
@@ -79,7 +79,6 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     );
 
     const onSearch = (e) => {
-        setSearch(e.target.value);
         dispatch(searchProduct(e.target.value));
     };
 
@@ -156,7 +155,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             onClick={() => navigate("/order")}
                             style={{ cursor: "pointer" }}
                         >
-                            <Badge count={3} size="small">
+                            <Badge
+                                count={order?.orderItems?.length}
+                                size="small"
+                            >
                                 <ShoppingCartOutlined
                                     style={{ fontSize: "35px", color: "#fff" }}
                                 />

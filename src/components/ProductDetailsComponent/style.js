@@ -79,12 +79,14 @@ export const WrapperQuantityProduct = styled.div`
 export const WrapperInputNumber = styled(InputNumber)`
     &.ant-input-number.ant-input-number-outlined {
         width: 50px;
-        padding-left: 6px;
         border-radius: 0;
         border-top: none;
         border-bottom: none;
     }
     & .ant-input-number-handler-wrap {
         display: none;
+    }
+    & .ant-input-number-input {
+        text-align: center;
     }
 `;

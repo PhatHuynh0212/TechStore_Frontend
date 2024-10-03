@@ -9,10 +9,10 @@ const ProductDetailsPage = () => {
     return (
         <div
             style={{
-                padding: "5px 120px",
+                padding: "5px 105px",
                 background: "#efefef",
                 height: "100vh",
-                width: "100%",
+                width: "1270px",
             }}
         >
             <p style={{ margin: "5px 0" }}>

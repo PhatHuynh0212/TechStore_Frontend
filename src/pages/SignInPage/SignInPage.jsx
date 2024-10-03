@@ -12,7 +12,7 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import Loading from "../../components/LoadingComponent/LoadingComponent";
 import LogoSignIn from "../../assets/images/logo-signIn.png";
 import { Image } from "antd";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import { jwtDecode } from "jwt-decode";
@@ -21,6 +21,7 @@ import { updateUser } from "../../redux/slides/userSlide";
 
 const SignInPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -40,7 +41,11 @@ const SignInPage = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            navigate("/"); // Điều hướng về trang chủ
+            if (location?.state) {
+                navigate(location?.state);
+            } else {
+                navigate("/"); // Điều hướng về trang chủ
+            }
             localStorage.setItem(
                 "access_token",
                 JSON.stringify(data?.access_token)
