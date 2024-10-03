@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../services/UserService";
 import { resetUser } from "../../redux/slides/userSlide";
+import { resetOrder } from "../../redux/slides/orderSlide";
 import Loading from "../LoadingComponent/LoadingComponent";
 import { searchProduct } from "../../redux/slides/productSlide";
 
@@ -50,7 +51,9 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setPending(true);
         await UserService.logoutUser();
         localStorage.removeItem("access_token");
+        localStorage.removeItem("persist:root");
         dispatch(resetUser());
+        dispatch(resetOrder());
         setPending(false);
         navigate("/");
     };

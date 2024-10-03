@@ -59,6 +59,20 @@ export const orderSlice = createSlice({
             );
             state.orderItems = itemOrder;
         },
+        resetOrder: (state) => {
+            state.orderItems = [];
+            state.shippingAddress = {};
+            state.paymentMethod = "";
+            state.itemsPrice = 0;
+            state.shippingPrice = 0;
+            state.taxPrice = 0;
+            state.totalPrice = 0;
+            state.user = "";
+            state.isPaid = false;
+            state.paidAt = "";
+            state.isDelivered = false;
+            state.deliveredAt = "";
+        },
     },
 });
 
@@ -69,6 +83,7 @@ export const {
     increaseAmount,
     decreaseAmount,
     removeAllOrderProduct,
+    resetOrder,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
