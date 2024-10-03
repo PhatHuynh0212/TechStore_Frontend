@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import {
     WrapperButtonHover,
@@ -25,7 +25,7 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false);
     // Số lượng product hiển thị ở Trang Chủ
     const [limit, setLimit] = useState(5);
-    const arr = ["Cellphone", "Tablet", "Laptop", "PC"];
+    const [typeProducts, setTypeProducts] = useState([]);
 
     const fetchProductAll = async (context) => {
         const limit = context?.queryKey ? context?.queryKey[1] : 5;
@@ -45,11 +45,24 @@ const HomePage = () => {
     // Check load all product
     const allProductsLoaded = products?.data?.length >= products?.totalProduct;
 
+    // Fetch all type product
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        if (res?.status === "OK") {
+            setTypeProducts(res?.data);
+        }
+        return res;
+    };
+
+    useEffect(() => {
+        fetchAllTypeProduct();
+    }, []);
+
     return (
         <Loading isPending={isLoading || loading}>
             <div style={{ width: "1270px", margin: "0 auto" }}>
                 <WrapperTypeProduct>
-                    {arr.map((item) => {
+                    {typeProducts?.map((item) => {
                         return <TypeProduct key={item} name={item} />;
                     })}
                 </WrapperTypeProduct>

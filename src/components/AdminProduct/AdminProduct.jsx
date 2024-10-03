@@ -14,9 +14,9 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 import TableComponent from "../TableComponent/TableComponent";
-import { Button, Form, Space } from "antd";
+import { Button, Form, Select, Space } from "antd";
 import InputComponent from "../InputComponent/InputComponent";
-import { getBase64 } from "../../utils";
+import { getBase64, renderOptions } from "../../utils";
 import * as ProductService from "../../services/ProductService";
 import * as Message from "../Message/Message";
 import { useMutationHooks } from "../../hooks/useMutationHook";
@@ -32,6 +32,7 @@ const AdminProduct = () => {
     const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
     const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
     const [rowSelected, setRowSelected] = useState("");
+    const [typeSelect, setTypeSelect] = useState("");
     const user = useSelector((state) => state?.user);
     const [form] = Form.useForm();
 
@@ -43,6 +44,7 @@ const AdminProduct = () => {
         rating: "",
         description: "",
         image: "",
+        newType: "",
     });
     const [stateProductDetails, setStateProductDetails] = useState({
         name: "",
@@ -110,6 +112,12 @@ const AdminProduct = () => {
         return res;
     };
 
+    // Fetch all type product
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        return res;
+    };
+
     useEffect(() => {
         form.setFieldsValue(stateProductDetails);
     }, [form, stateProductDetails]);
@@ -170,6 +178,11 @@ const AdminProduct = () => {
     const queryProduct = useQuery({
         queryKey: ["products"],
         queryFn: getAllProduct,
+    });
+
+    const typeProduct = useQuery({
+        queryKey: ["type-product"],
+        queryFn: fetchAllTypeProduct,
     });
 
     const { isLoading, data: products } = queryProduct;
@@ -264,7 +277,19 @@ const AdminProduct = () => {
     }, [isSuccessDeletedMany]);
 
     const onFinish = () => {
-        mutationCreate.mutate(stateProduct, {
+        const params = {
+            name: stateProduct.name,
+            type:
+                stateProduct.type === "add_type"
+                    ? stateProduct.newType
+                    : stateProduct.type,
+            price: stateProduct.price,
+            countInStock: stateProduct.countInStock,
+            rating: stateProduct.rating,
+            description: stateProduct.namdescriptione,
+            image: stateProduct.image,
+        };
+        mutationCreate.mutate(params, {
             onSettled: () => {
                 queryProduct.refetch();
             },
@@ -320,6 +345,13 @@ const AdminProduct = () => {
                 },
             }
         );
+    };
+
+    const handleChangeSelect = (value) => {
+        setStateProduct({
+            ...stateProduct,
+            type: value,
+        });
     };
 
     // Search
@@ -563,12 +595,33 @@ const AdminProduct = () => {
                                 },
                             ]}
                         >
-                            <InputComponent
-                                value={stateProduct.type}
-                                onChange={handleOnChange}
+                            <Select
                                 name="type"
+                                value={stateProduct.type}
+                                onChange={handleChangeSelect}
+                                style={{ width: 120 }}
+                                options={renderOptions(typeProduct?.data?.data)}
                             />
                         </Form.Item>
+
+                        {stateProduct.type === "add_type" && (
+                            <Form.Item
+                                label="New type"
+                                name="newType"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please input your newType!",
+                                    },
+                                ]}
+                            >
+                                <InputComponent
+                                    value={stateProduct.newType}
+                                    onChange={handleOnChange}
+                                    name="newType"
+                                />
+                            </Form.Item>
+                        )}
 
                         <Form.Item
                             label="Price"
