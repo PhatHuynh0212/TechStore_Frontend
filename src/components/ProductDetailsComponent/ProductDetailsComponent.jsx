@@ -21,6 +21,7 @@ import Loading from "../LoadingComponent/LoadingComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { addOrderProduct } from "../../redux/slides/orderSlide";
+import { convertPrice } from "../../utils";
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const navigate = useNavigate();
@@ -175,7 +176,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     </div>
                     <WrapperPriceProduct>
                         <WrapperPriceTextProduct>
-                            {productDetails?.price.toLocaleString()} ₫
+                            {convertPrice(productDetails?.price)}
                         </WrapperPriceTextProduct>
                     </WrapperPriceProduct>
                     <WrapperAddressProduct>

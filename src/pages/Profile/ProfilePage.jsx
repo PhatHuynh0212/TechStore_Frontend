@@ -30,10 +30,11 @@ const ProfilePage = () => {
     // Call API
     const mutation = useMutationHooks((data) => {
         const { id, access_token, ...rests } = data;
-        UserService.updateUser(id, rests, access_token);
+        const res = UserService.updateUser(id, rests, access_token);
+        return res;
     });
 
-    const { isPending, isSuccess, isError } = mutation;
+    const { data, isPending, isSuccess, isError } = mutation;
 
     useEffect(() => {
         setName(user?.name);
@@ -43,28 +44,13 @@ const ProfilePage = () => {
         setAvatar(user?.avatar);
     }, [user]);
 
-    const handleGetDetailsUser = useCallback(
-        async (id, token) => {
-            const res = await UserService.getDetailsUser(id, token);
-            dispatch(updateUser({ ...res?.data, access_token: token }));
-        },
-        [dispatch]
-    );
-
     useEffect(() => {
         if (isSuccess) {
             Message.success();
-            handleGetDetailsUser(user?.id, user?.access_token);
         } else if (isError) {
             Message.error();
         }
-    }, [
-        isSuccess,
-        isError,
-        handleGetDetailsUser,
-        user?.id,
-        user?.access_token,
-    ]);
+    }, [isSuccess, isError]);
 
     const handleOnChangeName = (value) => {
         setName(value);
@@ -91,15 +77,31 @@ const ProfilePage = () => {
     };
 
     const handleUpdate = async () => {
-        mutation.mutate({
-            id: user?.id,
-            access_token: user?.access_token,
-            name,
-            email,
-            phone,
-            address,
-            avatar,
-        });
+        mutation.mutate(
+            {
+                id: user?.id,
+                access_token: user?.access_token,
+                name,
+                email,
+                phone,
+                address,
+                avatar,
+            },
+            {
+                onSuccess: () => {
+                    dispatch(
+                        updateUser({
+                            ...user,
+                            name,
+                            email,
+                            phone,
+                            address,
+                            avatar,
+                        })
+                    );
+                },
+            }
+        );
     };
 
     return (

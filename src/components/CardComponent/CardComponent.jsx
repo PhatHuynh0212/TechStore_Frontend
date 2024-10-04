@@ -9,6 +9,7 @@ import {
     WrapperStyleTextSell,
 } from "./style";
 import { useNavigate } from "react-router";
+import { convertPrice } from "../../utils";
 
 const CardComponent = (props) => {
     const {
@@ -56,7 +57,7 @@ const CardComponent = (props) => {
             </WrapperReportText>
             <WrapperPriceText>
                 <span style={{ marginRight: "3px" }}>
-                    {price?.toLocaleString()} ₫
+                    {convertPrice(price)}
                 </span>
                 <WrapperDiscountText>- {discount || 5}%</WrapperDiscountText>
             </WrapperPriceText>

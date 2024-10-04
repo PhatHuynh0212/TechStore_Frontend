@@ -16,9 +16,8 @@ export const WrapperCountOrder = styled.div`
 `;
 
 export const WrapperPriceDiscount = styled.div`
-    padding-left: 7px;
+    text-align: right;
     color: grey;
-    text-decoration: line-through;
 `;
 
 export const WrapperLeft = styled.div`
@@ -41,7 +40,7 @@ export const ButtonContainer = styled.div`
 export const StyledButton = styled.button`
     background: rgb(255, 57, 69);
     height: 48px;
-    width: 220px;
+    width: 100%;
     border: none;
     border-radius: 4px;
     font-size: 15px;

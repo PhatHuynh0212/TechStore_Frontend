@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-    ButtonContainer,
-    StyledButton,
     WrapperCountOrder,
-    WrapperInfo,
     WrapperItemOrder,
     WrapperLeft,
     WrapperListOrder,
@@ -12,7 +9,7 @@ import {
     WrapperStyleHeader,
     WrapperTotal,
 } from "./style";
-import { Checkbox } from "antd";
+import { Checkbox, Form } from "antd";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { WrapperInputNumber } from "../../components/ProductDetailsComponent/style";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,13 +18,32 @@ import {
     increaseAmount,
     removeAllOrderProduct,
     removeOrderProduct,
+    selectedOrder,
 } from "../../redux/slides/orderSlide";
+import { convertPrice } from "../../utils";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import ModalComponent from "../../components/ModalComponent/ModalComponent";
+import InputComponent from "../../components/InputComponent/InputComponent";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import * as UserService from "../../services/UserService";
+import Loading from "../../components/LoadingComponent/LoadingComponent";
+import * as Message from "../../components/Message/Message";
+import { updateUser } from "../../redux/slides/userSlide";
 
 const OrderPage = () => {
     const order = useSelector((state) => state?.order);
+    const user = useSelector((state) => state?.user);
     const [listChecked, setListChecked] = useState([]);
+    const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
     const dispatch = useDispatch();
-    console.log("order: ", order);
+    const [form] = Form.useForm();
+
+    const [stateUserDetails, setStateUserDetails] = useState({
+        name: "",
+        phone: "",
+        address: "",
+        city: "",
+    });
 
     const onChange = (e) => {
         console.log(`check = ${e.target.value}`);
@@ -70,6 +86,123 @@ const OrderPage = () => {
             dispatch(removeAllOrderProduct({ listChecked }));
         }
     };
+
+    useEffect(() => {
+        dispatch(selectedOrder({ listChecked }));
+    }, [listChecked]);
+
+    useEffect(() => {
+        form.setFieldsValue(stateUserDetails);
+    }, [form, stateUserDetails]);
+
+    useEffect(() => {
+        if (isOpenModalUpdateInfo) {
+            setStateUserDetails({
+                name: user?.name,
+                phone: user?.phone,
+                address: user?.address,
+                city: user?.city,
+            });
+        }
+    }, [isOpenModalUpdateInfo]);
+
+    const priceMemo = useMemo(() => {
+        const result = order?.orderItemsSelected?.reduce((total, cur) => {
+            return total + cur.price * cur.amount;
+        }, 0);
+        return result;
+    }, [order]);
+
+    const priceDiscountMemo = useMemo(() => {
+        const result = order?.orderItemsSelected?.reduce((total, cur) => {
+            return total + cur.discount;
+        }, 0);
+        if (Number(result)) {
+            return result;
+        }
+        return 0;
+    }, [order]);
+
+    const deliveryFeeMemo = useMemo(() => {
+        if (priceMemo === 0) {
+            return 0;
+        } else if (priceMemo > 500000) {
+            return 10000;
+        } else {
+            return 20000;
+        }
+    }, [priceMemo]);
+
+    const totalPriceMemo = useMemo(() => {
+        const result =
+            Number(priceMemo) -
+            (Number(priceDiscountMemo) * Number(priceMemo)) / 100 +
+            Number(deliveryFeeMemo);
+        return convertPrice(result);
+    }, [priceMemo, priceDiscountMemo, deliveryFeeMemo]);
+
+    const mutationUpdate = useMutationHooks((data) => {
+        console.log("data", data);
+        const { id, token, ...rests } = data;
+        const res = UserService.updateUser(id, { ...rests }, token);
+        return res;
+    });
+    const { isPending, data } = mutationUpdate;
+    console.log("data: ", data);
+
+    const handleAddCard = () => {
+        console.log({ user });
+        if (!order?.orderItemsSelected?.length) {
+            Message.error("Please, choose product");
+        } else if (
+            !user?.name ||
+            !user?.phone ||
+            !user?.address ||
+            !user?.city
+        ) {
+            setIsOpenModalUpdateInfo(true);
+        }
+    };
+
+    const handleCancelUpdate = () => {
+        setStateUserDetails({
+            name: "",
+            phone: "",
+            address: "",
+            city: "",
+        });
+        setIsOpenModalUpdateInfo(false);
+    };
+
+    const handleUpdateInfoUser = () => {
+        const { name, phone, address, city } = stateUserDetails;
+        if (name && phone && address && city) {
+            mutationUpdate.mutate(
+                {
+                    id: user?.id,
+                    ...stateUserDetails,
+                    token: user?.access_token,
+                },
+                {
+                    onSuccess: () => {
+                        dispatch(
+                            updateUser({ ...user, name, phone, address, city })
+                        );
+                        setIsOpenModalUpdateInfo(false);
+                    },
+                }
+            );
+        }
+    };
+
+    const handleOnChangeDetails = (e) => {
+        setStateUserDetails({
+            ...stateUserDetails,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    console.log("stateUserDetails", stateUserDetails);
 
     return (
         <div
@@ -120,7 +253,7 @@ const OrderPage = () => {
                             >
                                 <span>Unit price</span>
                                 <span>Quantity</span>
-                                <span>Total amount</span>
+                                <span>Total price</span>
                                 <DeleteOutlined
                                     style={{ cursor: "pointer", color: "red" }}
                                     onClick={handleRemoveAllOrder}
@@ -128,135 +261,144 @@ const OrderPage = () => {
                             </div>
                         </WrapperStyleHeader>
                         <WrapperListOrder>
-                            {order?.orderItems?.map((order, index) => (
-                                <WrapperItemOrder key={index}>
-                                    <div
-                                        style={{
-                                            width: "390px",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 4,
-                                        }}
-                                    >
-                                        <Checkbox
-                                            onChange={onChange}
-                                            value={order?.product}
-                                            checked={listChecked.includes(
-                                                order?.product
-                                            )}
-                                        />
-                                        <img
-                                            src={order?.image}
-                                            style={{
-                                                width: "77px",
-                                                height: "79px",
-                                                objectFit: "cover",
-                                                margin: "0 10px",
-                                            }}
-                                            alt="img_product"
-                                        />
+                            {order?.orderItems?.map((order, index) => {
+                                return (
+                                    <WrapperItemOrder key={index}>
                                         <div
                                             style={{
-                                                width: "260px",
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                whiteSpace: "nowrap",
+                                                width: "390px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 4,
                                             }}
                                         >
-                                            {order?.name}
+                                            <Checkbox
+                                                onChange={onChange}
+                                                value={order?.product}
+                                                checked={listChecked.includes(
+                                                    order?.product
+                                                )}
+                                            />
+                                            <img
+                                                src={order?.image}
+                                                style={{
+                                                    width: "77px",
+                                                    height: "79px",
+                                                    objectFit: "cover",
+                                                    margin: "0 10px",
+                                                }}
+                                                alt="img_product"
+                                            />
+                                            <div
+                                                style={{
+                                                    width: "260px",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                }}
+                                            >
+                                                {order?.name}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            flex: 1,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                        }}
-                                    >
-                                        <span style={{ display: "flex" }}>
+                                        <div
+                                            style={{
+                                                flex: 1,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                            }}
+                                        >
                                             <span
                                                 style={{
-                                                    color: "#242424",
+                                                    display: "flex",
+                                                    flexDirection: "column",
                                                 }}
                                             >
-                                                {order?.price.toLocaleString()}
+                                                <span
+                                                    style={{
+                                                        color: "#242424",
+                                                    }}
+                                                >
+                                                    {convertPrice(order?.price)}
+                                                </span>
+                                                <WrapperPriceDiscount>
+                                                    -{order?.discount}%
+                                                </WrapperPriceDiscount>
                                             </span>
-                                            {/* <WrapperPriceDiscount>
-                                                {order?.amount}
-                                            </WrapperPriceDiscount> */}
-                                        </span>
-                                        <WrapperCountOrder>
-                                            <button
+                                            <WrapperCountOrder>
+                                                <button
+                                                    style={{
+                                                        border: "none",
+                                                        background:
+                                                            "transparent",
+                                                        cursor: "pointer",
+                                                    }}
+                                                    onClick={() =>
+                                                        handleChangeCount(
+                                                            "decrease",
+                                                            order?.product
+                                                        )
+                                                    }
+                                                >
+                                                    <MinusOutlined
+                                                        style={{
+                                                            color: "#000",
+                                                            fontSize: "10px",
+                                                        }}
+                                                    />
+                                                </button>
+                                                <WrapperInputNumber
+                                                    defaultValue={order?.amount}
+                                                    value={order?.amount}
+                                                    size="small"
+                                                />
+                                                <button
+                                                    style={{
+                                                        border: "none",
+                                                        background:
+                                                            "transparent",
+                                                        cursor: "pointer",
+                                                    }}
+                                                    onClick={() =>
+                                                        handleChangeCount(
+                                                            "increase",
+                                                            order?.product
+                                                        )
+                                                    }
+                                                >
+                                                    <PlusOutlined
+                                                        style={{
+                                                            color: "#000",
+                                                            fontSize: "10px",
+                                                        }}
+                                                    />
+                                                </button>
+                                            </WrapperCountOrder>
+                                            <span
                                                 style={{
-                                                    border: "none",
-                                                    background: "transparent",
+                                                    color: "#FF424E",
+                                                    fontWeight: 500,
+                                                }}
+                                            >
+                                                {convertPrice(
+                                                    order?.price * order?.amount
+                                                )}
+                                            </span>
+                                            <DeleteOutlined
+                                                style={{
                                                     cursor: "pointer",
+                                                    color: "red",
                                                 }}
                                                 onClick={() =>
-                                                    handleChangeCount(
-                                                        "decrease",
+                                                    handleDeleteOrder(
                                                         order?.product
                                                     )
                                                 }
-                                            >
-                                                <MinusOutlined
-                                                    style={{
-                                                        color: "#000",
-                                                        fontSize: "10px",
-                                                    }}
-                                                />
-                                            </button>
-                                            <WrapperInputNumber
-                                                defaultValue={order?.amount}
-                                                value={order?.amount}
-                                                size="small"
                                             />
-                                            <button
-                                                style={{
-                                                    border: "none",
-                                                    background: "transparent",
-                                                    cursor: "pointer",
-                                                }}
-                                                onClick={() =>
-                                                    handleChangeCount(
-                                                        "increase",
-                                                        order?.product
-                                                    )
-                                                }
-                                            >
-                                                <PlusOutlined
-                                                    style={{
-                                                        color: "#000",
-                                                        fontSize: "10px",
-                                                    }}
-                                                />
-                                            </button>
-                                        </WrapperCountOrder>
-                                        <span
-                                            style={{
-                                                color: "#FF424E",
-                                                fontWeight: 500,
-                                            }}
-                                        >
-                                            {(
-                                                order?.price * order?.amount
-                                            ).toLocaleString()}
-                                        </span>
-                                        <DeleteOutlined
-                                            style={{
-                                                cursor: "pointer",
-                                                color: "red",
-                                            }}
-                                            onClick={() =>
-                                                handleDeleteOrder(
-                                                    order?.product
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </WrapperItemOrder>
-                            ))}
+                                        </div>
+                                    </WrapperItemOrder>
+                                );
+                            })}
                         </WrapperListOrder>
                     </WrapperLeft>
                     <WrapperRight>
@@ -325,8 +467,7 @@ const OrderPage = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        price
-                                        {/* {convertPrice(priceMemo)} */}
+                                        {convertPrice(priceMemo)}
                                     </span>
                                 </div>
                                 <div
@@ -344,8 +485,7 @@ const OrderPage = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        price
-                                        {/* {convertPrice(priceDiscountMemo)} */}
+                                        {priceDiscountMemo}%
                                     </span>
                                 </div>
                                 <div
@@ -363,8 +503,7 @@ const OrderPage = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        price
-                                        {/* {convertPrice(diliveryPriceMemo)} */}
+                                        {convertPrice(deliveryFeeMemo)}
                                     </span>
                                 </div>
                             </div>
@@ -374,23 +513,24 @@ const OrderPage = () => {
                                     style={{
                                         display: "flex",
                                         flexDirection: "column",
+                                        alignItems: "center",
                                     }}
                                 >
                                     <span
                                         style={{
                                             color: "rgb(254, 56, 52)",
-                                            fontSize: "24px",
+                                            fontSize: "26px",
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        price
-                                        {/* {convertPrice(totalPriceMemo)} */}
+                                        {totalPriceMemo}
                                     </span>
                                     <span
                                         style={{
                                             paddingTop: "5px",
                                             color: "#000",
                                             fontSize: "13px",
+                                            fontWeight: "normal",
                                         }}
                                     >
                                         (Indclude VAT)
@@ -398,12 +538,124 @@ const OrderPage = () => {
                                 </span>
                             </WrapperTotal>
                         </div>
-                        <ButtonContainer>
-                            <StyledButton>Buy product</StyledButton>
-                        </ButtonContainer>
+                        <ButtonComponent
+                            onClick={() => handleAddCard()}
+                            size={40}
+                            styleButton={{
+                                marginTop: "15px",
+                                background: "#FF3945",
+                                height: "50px",
+                                width: "100%",
+                                border: "none",
+                                borderRadius: "4px",
+                                color: "#fff",
+                                fontSize: "16px",
+                                fontWeight: "700",
+                            }}
+                            textButton={"Buy product"}
+                        />
                     </WrapperRight>
                 </div>
             </div>
+            <ModalComponent
+                title="Update delivery information"
+                open={isOpenModalUpdateInfo}
+                onCancel={handleCancelUpdate}
+                onOk={handleUpdateInfoUser}
+                okButtonProps={{
+                    style: {
+                        backgroundColor: "blue",
+                        borderColor: "blue",
+                    },
+                }}
+                cancelButtonProps={{
+                    style: {
+                        backgroundColor: "gray",
+                        borderColor: "gray",
+                        color: "white",
+                    },
+                }}
+            >
+                <Loading isPending={isPending}>
+                    <Form
+                        name="user details"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 20 }}
+                        style={{ maxWidth: 600 }}
+                        // onFinish={onUpdateUser}
+                        autoComplete="on"
+                        form={form}
+                    >
+                        <Form.Item
+                            label="Name"
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please input your name!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateUserDetails.name || ""}
+                                onChange={handleOnChangeDetails}
+                                name="name"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Phone"
+                            name="phone"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please input your phone!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateUserDetails.phone}
+                                onChange={handleOnChangeDetails}
+                                name="phone"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Address"
+                            name="address"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please input your address!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateUserDetails.address}
+                                onChange={handleOnChangeDetails}
+                                name="address"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="City"
+                            name="city"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please input your city!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateUserDetails.city}
+                                onChange={handleOnChangeDetails}
+                                name="city"
+                            />
+                        </Form.Item>
+                    </Form>
+                </Loading>
+            </ModalComponent>
         </div>
     );
 };

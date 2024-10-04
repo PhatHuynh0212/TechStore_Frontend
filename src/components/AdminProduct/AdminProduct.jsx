@@ -45,6 +45,7 @@ const AdminProduct = () => {
         description: "",
         image: "",
         newType: "",
+        discount: "",
     });
     const [stateProductDetails, setStateProductDetails] = useState({
         name: "",
@@ -54,12 +55,21 @@ const AdminProduct = () => {
         rating: "",
         description: "",
         image: "",
+        discount: "",
     });
 
     // Call API
     const mutationCreate = useMutationHooks((data) => {
-        const { name, type, price, countInStock, rating, description, image } =
-            data;
+        const {
+            name,
+            type,
+            price,
+            countInStock,
+            rating,
+            description,
+            image,
+            discount,
+        } = data;
         const res = ProductService.createProduct({
             name,
             type,
@@ -68,6 +78,7 @@ const AdminProduct = () => {
             rating,
             description,
             image,
+            discount,
         });
         return res;
     });
@@ -106,6 +117,7 @@ const AdminProduct = () => {
                 rating: res?.data?.rating,
                 description: res?.data?.description,
                 image: res?.data?.image,
+                discount: res?.data?.discount,
             });
         }
         setIsLoadingUpdate(false);
@@ -206,6 +218,7 @@ const AdminProduct = () => {
             rating: "",
             description: "",
             image: "",
+            discount: "",
         });
         form.resetFields();
     };
@@ -220,6 +233,7 @@ const AdminProduct = () => {
             rating: "",
             description: "",
             image: "",
+            discount: "",
         });
         form.resetFields();
     };
@@ -286,8 +300,9 @@ const AdminProduct = () => {
             price: stateProduct.price,
             countInStock: stateProduct.countInStock,
             rating: stateProduct.rating,
-            description: stateProduct.namdescriptione,
+            description: stateProduct.description,
             image: stateProduct.image,
+            discount: stateProduct.discount,
         };
         mutationCreate.mutate(params, {
             onSettled: () => {
@@ -641,6 +656,24 @@ const AdminProduct = () => {
                         </Form.Item>
 
                         <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[
+                                {
+                                    required: true,
+                                    message:
+                                        "Please input your discount of product!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateProduct.discount}
+                                onChange={handleOnChange}
+                                name="discount"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
                             label="Count in stock"
                             name="countInStock"
                             rules={[
@@ -805,6 +838,24 @@ const AdminProduct = () => {
                                 value={stateProductDetails.price}
                                 onChange={handleOnChangeDetails}
                                 name="price"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[
+                                {
+                                    required: true,
+                                    message:
+                                        "Please input your discount of product!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateProductDetails.discount}
+                                onChange={handleOnChangeDetails}
+                                name="discount"
                             />
                         </Form.Item>
 

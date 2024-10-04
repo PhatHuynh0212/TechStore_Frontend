@@ -151,6 +151,7 @@ const TableComponent = (props) => {
                 </WrapperButtonExtend>
 
                 <Table
+                    pagination={{ pageSize: 8 }}
                     rowSelection={{
                         type: selectionType,
                         ...rowSelection,

@@ -80,6 +80,10 @@ const AdminUser = () => {
         return res;
     };
 
+    useEffect(() => {
+        form.setFieldsValue(stateUserDetails);
+    }, [form, stateUserDetails]);
+
     const fetchGetDetailsUser = async (rowSelected) => {
         const res = await UserService.getDetailsUser(rowSelected);
         if (res?.data) {
@@ -95,10 +99,6 @@ const AdminUser = () => {
         setIsLoadingUpdate(false);
         return res;
     };
-
-    useEffect(() => {
-        form.setFieldsValue(stateUserDetails);
-    }, [form, stateUserDetails]);
 
     useEffect(() => {
         if (rowSelected && isOpenDrawer) {
