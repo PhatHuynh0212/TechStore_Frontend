@@ -24,6 +24,9 @@ export const WrapperLeft = styled.div`
     width: 100%;
     max-width: 90%;
     padding-right: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 `;
 export const WrapperRight = styled.div`
     width: 100%;
@@ -74,6 +77,12 @@ export const WrapperStyleHeader = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
+    background: #fff;
+    border-radius: 5px;
+`;
+
+export const WrapperStyleStep = styled.div`
+    padding: 15px;
     background: #fff;
     border-radius: 5px;
 `;

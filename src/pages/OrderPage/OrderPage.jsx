@@ -8,6 +8,7 @@ import {
     WrapperPriceDiscount,
     WrapperRight,
     WrapperStyleHeader,
+    WrapperStyleStep,
     WrapperTotal,
 } from "./style";
 import { Checkbox, Form } from "antd";
@@ -23,6 +24,7 @@ import {
 } from "../../redux/slides/orderSlide";
 import { convertPrice } from "../../utils";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import StepComponent from "../../components/StepComponent/StepComponent";
 import ModalComponent from "../../components/ModalComponent/ModalComponent";
 import InputComponent from "../../components/InputComponent/InputComponent";
 import { useMutationHooks } from "../../hooks/useMutationHook";
@@ -131,9 +133,9 @@ const OrderPage = () => {
     }, [order]);
 
     const deliveryFeeMemo = useMemo(() => {
-        if (priceMemo === 0) {
+        if (priceMemo >= 1000000 || order?.orderItemsSelected.length === 0) {
             return 0;
-        } else if (priceMemo > 500000) {
+        } else if (priceMemo >= 500000 && priceMemo < 1000000) {
             return 10000;
         } else {
             return 20000;
@@ -212,6 +214,22 @@ const OrderPage = () => {
         });
     };
 
+    // Step component
+    const stepItems = [
+        {
+            title: "20.000 ₫",
+            description: "Under 500.000 ₫",
+        },
+        {
+            title: "10.000 ₫",
+            description: "From 500.000 to 1.000.000 ₫",
+        },
+        {
+            title: "0 ₫",
+            description: "Over 1.000.000 ₫",
+        },
+    ];
+
     return (
         <div
             style={{
@@ -231,6 +249,20 @@ const OrderPage = () => {
                     }}
                 >
                     <WrapperLeft>
+                        <WrapperStyleStep>
+                            <StepComponent
+                                items={stepItems}
+                                current={
+                                    deliveryFeeMemo === 10000
+                                        ? 2
+                                        : deliveryFeeMemo === 20000
+                                        ? 1
+                                        : order?.orderItemsSelected.length === 0
+                                        ? 0
+                                        : 3
+                                }
+                            />
+                        </WrapperStyleStep>
                         <WrapperStyleHeader>
                             <span
                                 style={{
