@@ -37,7 +37,8 @@ const CardComponent = (props) => {
             cover={
                 <img alt="image_product" src={image} style={{ width: "99%" }} />
             }
-            onClick={() => handleDetailsProduct(id)}
+            onClick={() => countInStock !== 0 && handleDetailsProduct(id)}
+            disabled={countInStock === 0}
         >
             <StyleNameProduct>{name}</StyleNameProduct>
             <WrapperReportText>
@@ -52,7 +53,7 @@ const CardComponent = (props) => {
                     />
                 </span>
                 <WrapperStyleTextSell>
-                    | Sold {selled || 1000}+
+                    | Sold {selled || 10}+
                 </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>

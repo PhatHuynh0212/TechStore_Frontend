@@ -47,6 +47,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         navigate("/system/admin");
     };
 
+    const handleNavigateMyOrder = () => {
+        navigate("/my-order");
+    };
+
     const handleLogout = async () => {
         setPending(true);
         await UserService.logoutUser();
@@ -74,6 +78,9 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             )}
             <WrapperContentPopup onClick={handleNavigateProfile}>
                 User information
+            </WrapperContentPopup>
+            <WrapperContentPopup onClick={handleNavigateMyOrder}>
+                My order
             </WrapperContentPopup>
             <WrapperContentPopup onClick={handleLogout}>
                 Logout

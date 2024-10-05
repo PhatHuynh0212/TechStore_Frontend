@@ -40,7 +40,7 @@ const OrderSuccess = () => {
                         style={{
                             marginBottom: "15px",
                             fontSize: "24px",
-                            color: "#4a4a4a",
+                            color: "#49C628",
                             fontWeight: "600",
                         }}
                     >

@@ -474,6 +474,11 @@ const AdminProduct = () => {
             ...getColumnSearchProps("name"),
         },
         {
+            title: "Type",
+            dataIndex: "type",
+            ...getColumnSearchProps("type"),
+        },
+        {
             title: "Price",
             dataIndex: "price",
             sorter: (a, b) => a.price - b.price,
@@ -499,6 +504,11 @@ const AdminProduct = () => {
             },
         },
         {
+            title: "Inventory",
+            dataIndex: "countInStock",
+            sorter: (a, b) => a.countInStock - b.countInStock,
+        },
+        {
             title: "Rating",
             dataIndex: "rating",
             sorter: (a, b) => a.rating - b.rating,
@@ -522,11 +532,6 @@ const AdminProduct = () => {
                         return true;
                 }
             },
-        },
-        {
-            title: "Type",
-            dataIndex: "type",
-            ...getColumnSearchProps("type"),
         },
         {
             title: "Action",
