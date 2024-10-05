@@ -24,6 +24,7 @@ const ProfilePage = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
     const [avatar, setAvatar] = useState("");
     const dispatch = useDispatch();
 
@@ -41,6 +42,7 @@ const ProfilePage = () => {
         setEmail(user?.email);
         setPhone(user?.phone);
         setAddress(user?.address);
+        setCity(user?.city);
         setAvatar(user?.avatar);
     }, [user]);
 
@@ -68,6 +70,10 @@ const ProfilePage = () => {
         setAddress(value);
     };
 
+    const handleOnChangeCity = (value) => {
+        setCity(value);
+    };
+
     const handleOnChangeAvatar = async ({ fileList }) => {
         const file = fileList[0];
         if (!file.url && !file.preview) {
@@ -85,6 +91,7 @@ const ProfilePage = () => {
                 email,
                 phone,
                 address,
+                city,
                 avatar,
             },
             {
@@ -96,6 +103,7 @@ const ProfilePage = () => {
                             email,
                             phone,
                             address,
+                            city,
                             avatar,
                         })
                     );
@@ -188,6 +196,30 @@ const ProfilePage = () => {
                             id="address"
                             value={address}
                             onChange={handleOnChangeAddress}
+                        />
+                        <ButtonComponent
+                            onClick={handleUpdate}
+                            size={40}
+                            styleButton={{
+                                color: "#1a94ff",
+                                fontSize: "1.6rem",
+                                fontWeight: "600",
+                                height: "30px",
+                                width: "fit-content",
+                                border: "1px solid #1a94ff",
+                                borderRadius: "4px",
+                                padding: "4px 6px 6px",
+                            }}
+                            textButton={"Update"}
+                        />
+                    </WrapperInput>
+                    <WrapperInput>
+                        <WrapperLabel htmlFor="city">City</WrapperLabel>
+                        <InputForm
+                            style={{ width: "300px" }}
+                            id="city"
+                            value={city}
+                            onChange={handleOnChangeCity}
                         />
                         <ButtonComponent
                             onClick={handleUpdate}
