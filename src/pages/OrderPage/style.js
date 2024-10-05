@@ -52,6 +52,7 @@ export const StyledButton = styled.button`
 export const WrapperInfo = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 8px 0;
 `;
 

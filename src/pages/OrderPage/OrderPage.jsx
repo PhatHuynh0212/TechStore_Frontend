@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
     WrapperCountOrder,
+    WrapperInfo,
     WrapperItemOrder,
     WrapperLeft,
     WrapperListOrder,
@@ -29,8 +30,10 @@ import * as UserService from "../../services/UserService";
 import Loading from "../../components/LoadingComponent/LoadingComponent";
 import * as Message from "../../components/Message/Message";
 import { updateUser } from "../../redux/slides/userSlide";
+import { useNavigate } from "react-router";
 
 const OrderPage = () => {
+    const navigate = useNavigate();
     const order = useSelector((state) => state?.order);
     const user = useSelector((state) => state?.user);
     const [listChecked, setListChecked] = useState([]);
@@ -106,6 +109,10 @@ const OrderPage = () => {
         }
     }, [isOpenModalUpdateInfo]);
 
+    const handleChangeAddress = () => {
+        setIsOpenModalUpdateInfo(true);
+    };
+
     const priceMemo = useMemo(() => {
         const result = order?.orderItemsSelected?.reduce((total, cur) => {
             return total + cur.price * cur.amount;
@@ -138,20 +145,17 @@ const OrderPage = () => {
             Number(priceMemo) -
             (Number(priceDiscountMemo) * Number(priceMemo)) / 100 +
             Number(deliveryFeeMemo);
-        return convertPrice(result);
+        return result;
     }, [priceMemo, priceDiscountMemo, deliveryFeeMemo]);
 
     const mutationUpdate = useMutationHooks((data) => {
-        console.log("data", data);
         const { id, token, ...rests } = data;
         const res = UserService.updateUser(id, { ...rests }, token);
         return res;
     });
     const { isPending, data } = mutationUpdate;
-    console.log("data: ", data);
 
     const handleAddCard = () => {
-        console.log({ user });
         if (!order?.orderItemsSelected?.length) {
             Message.error("Please, choose product");
         } else if (
@@ -161,6 +165,8 @@ const OrderPage = () => {
             !user?.city
         ) {
             setIsOpenModalUpdateInfo(true);
+        } else {
+            navigate("/payment");
         }
     };
 
@@ -189,6 +195,10 @@ const OrderPage = () => {
                             updateUser({ ...user, name, phone, address, city })
                         );
                         setIsOpenModalUpdateInfo(false);
+                        Message.success();
+                    },
+                    onError: () => {
+                        Message.error("Failed to update user information.");
                     },
                 }
             );
@@ -201,8 +211,6 @@ const OrderPage = () => {
             [e.target.name]: e.target.value,
         });
     };
-
-    console.log("stateUserDetails", stateUserDetails);
 
     return (
         <div
@@ -409,38 +417,32 @@ const OrderPage = () => {
                                 borderRadius: "5px",
                             }}
                         >
-                            {/* <WrapperInfo>
+                            <WrapperInfo>
                                 <div
                                     style={{
                                         display: "flex",
-                                        flexDirection: "row",
+                                        flexDirection: "column",
+                                        width: "60%",
                                     }}
                                 >
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                        }}
-                                    >
-                                        <span>Địa chỉ giao hàng : </span>
-                                        <span style={{ fontWeight: "bold" }}>
-                                            HCM
-                                        </span>
-                                    </div>
-                                    <div
-                                        // onClick={handleChangeAddress}
-                                        style={{
-                                            color: "#9255FD",
-                                            marginTop: "10px",
-                                            fontSize: "15px",
-                                            cursor: "pointer",
-                                            marginLeft: "200px",
-                                        }}
-                                    >
-                                        Thay đổi
-                                    </div>
+                                    <span>Address:</span>
+                                    <span style={{ fontWeight: "bold" }}>
+                                        {user?.address} - {user?.city}
+                                    </span>
                                 </div>
-                            </WrapperInfo> */}
+                                <div
+                                    onClick={handleChangeAddress}
+                                    style={{
+                                        color: "#9255FD",
+                                        padding: "5px 0",
+                                        cursor: "pointer",
+                                        width: "20%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    Change
+                                </div>
+                            </WrapperInfo>
                             <div
                                 style={{
                                     display: "flex",
@@ -448,7 +450,7 @@ const OrderPage = () => {
                                     gap: "5px",
                                     justifyContent: "space-between",
                                     padding: "15px 0",
-                                    // borderTop: "1px solid #f0f0f0",
+                                    borderTop: "1px solid #f0f0f0",
                                     borderBottom: "1px solid #f0f0f0",
                                 }}
                             >
@@ -523,7 +525,7 @@ const OrderPage = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        {totalPriceMemo}
+                                        {convertPrice(totalPriceMemo)}
                                     </span>
                                     <span
                                         style={{
