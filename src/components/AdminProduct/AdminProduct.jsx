@@ -35,8 +35,7 @@ const AdminProduct = () => {
     const [typeSelect, setTypeSelect] = useState("");
     const user = useSelector((state) => state?.user);
     const [form] = Form.useForm();
-
-    const [stateProduct, setStateProduct] = useState({
+    const initial = () => ({
         name: "",
         type: "",
         price: "",
@@ -47,16 +46,9 @@ const AdminProduct = () => {
         newType: "",
         discount: "",
     });
-    const [stateProductDetails, setStateProductDetails] = useState({
-        name: "",
-        type: "",
-        price: "",
-        countInStock: "",
-        rating: "",
-        description: "",
-        image: "",
-        discount: "",
-    });
+
+    const [stateProduct, setStateProduct] = useState(initial());
+    const [stateProductDetails, setStateProductDetails] = useState(initial());
 
     // Call API
     const mutationCreate = useMutationHooks((data) => {
@@ -131,8 +123,12 @@ const AdminProduct = () => {
     };
 
     useEffect(() => {
-        form.setFieldsValue(stateProductDetails);
-    }, [form, stateProductDetails]);
+        if (!isModalOpen) {
+            form.setFieldsValue(stateProductDetails);
+        } else {
+            form.setFieldsValue(initial());
+        }
+    }, [form, stateProductDetails, isModalOpen]);
 
     useEffect(() => {
         if (rowSelected) {

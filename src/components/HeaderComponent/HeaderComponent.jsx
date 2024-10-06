@@ -48,7 +48,9 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     };
 
     const handleNavigateMyOrder = () => {
-        navigate("/my-order");
+        navigate(`/my-order`, {
+            state: { id: user?.id, token: user?.access_token },
+        });
     };
 
     const handleLogout = async () => {
