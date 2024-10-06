@@ -63,7 +63,6 @@ const AdminUser = () => {
     // });
 
     const mutationUpdate = useMutationHooks((data) => {
-        console.log("data", data);
         const { id, token, ...rests } = data;
         const res = UserService.updateUser(id, { ...rests }, token);
         return res;

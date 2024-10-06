@@ -20,7 +20,6 @@ const TableComponent = (props) => {
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             setRowSelectedKeys(selectedRowKeys);
-            console.log(`selectedRowKeys: ${selectedRowKeys}`);
         },
     };
 

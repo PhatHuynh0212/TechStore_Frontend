@@ -24,6 +24,7 @@ const MyOrder = () => {
     const location = useLocation();
     const { state } = location;
     const navigate = useNavigate();
+    const user = useSelector((state) => state.user);
 
     const fetchMyOrder = async () => {
         const res = await OrderService.getOrderByUserId(
@@ -32,8 +33,6 @@ const MyOrder = () => {
         );
         return res.data;
     };
-
-    // const user = useSelector((state) => state.user);
 
     const queryOrder = useQuery({
         queryKey: ["orders"],
@@ -51,43 +50,43 @@ const MyOrder = () => {
         });
     };
 
-    // const mutation = useMutationHooks((data) => {
-    //     const { id, token, orderItems, userId } = data;
-    //     const res = OrderService.cancelOrder(id, token, orderItems, userId);
-    //     return res;
-    // });
+    const mutation = useMutationHooks((data) => {
+        const { id, token, orderItems } = data;
+        const res = OrderService.cancelOrder(id, token, orderItems);
+        return res;
+    });
 
-    // const handleCancelOrder = (order) => {
-    //     mutation.mutate(
-    //         {
-    //             id: order._id,
-    //             token: state?.token,
-    //             orderItems: order?.orderItems,
-    //             userId: user.id,
-    //         },
-    //         {
-    //             onSuccess: () => {
-    //                 queryOrder.refetch();
-    //             },
-    //         }
-    //     );
-    // };
-    // const {
-    //     isPending: isPendingCancel,
-    //     isSuccess: isSuccessCancel,
-    //     isError: isErrorCancle,
-    //     data: dataCancel,
-    // } = mutation;
+    const handleCancelOrder = (order) => {
+        mutation.mutate(
+            {
+                id: order?._id,
+                token: state?.token,
+                orderItems: order?.orderItems,
+            },
+            {
+                onSuccess: () => {
+                    queryOrder.refetch();
+                },
+            }
+        );
+    };
 
-    // useEffect(() => {
-    //     if (isSuccessCancel && dataCancel?.status === "OK") {
-    //         message.success();
-    //     } else if (isSuccessCancel && dataCancel?.status === "ERR") {
-    //         message.error(dataCancel?.message);
-    //     } else if (isErrorCancle) {
-    //         message.error();
-    //     }
-    // }, [isErrorCancle, isSuccessCancel]);
+    const {
+        isPending: isPendingCancel,
+        isSuccess: isSuccessCancel,
+        isError: isErrorCancel,
+        data: dataCancel,
+    } = mutation;
+
+    useEffect(() => {
+        if (isSuccessCancel && dataCancel?.status === "OK") {
+            message.success();
+        } else if (isSuccessCancel && dataCancel?.status === "ERR") {
+            message.error(dataCancel?.message);
+        } else if (isErrorCancel) {
+            message.error();
+        }
+    }, [isSuccessCancel, isErrorCancel]);
 
     const renderProduct = (data) => {
         return data?.map((order) => (
@@ -102,7 +101,7 @@ const MyOrder = () => {
     };
 
     return (
-        <Loading isPending={isPending}>
+        <Loading isPending={isPending || isPendingCancel}>
             <WrapperContainer>
                 <div
                     style={{
@@ -193,7 +192,9 @@ const MyOrder = () => {
                                         style={{ display: "flex", gap: "10px" }}
                                     >
                                         <ButtonComponent
-                                            // onClick={() => handleCanceOrder(order)}
+                                            onClick={() =>
+                                                handleCancelOrder(order)
+                                            }
                                             size={40}
                                             styleButton={{
                                                 height: "36px",

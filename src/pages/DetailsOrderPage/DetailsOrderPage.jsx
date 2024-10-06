@@ -164,13 +164,13 @@ const DetailsOrderPage = () => {
                                 </WrapperItem>
                                 <WrapperItem>{order?.amount}</WrapperItem>
                                 <WrapperItem>
-                                    {/* {order?.discount
+                                    {order?.discount
                                         ? convertPrice(
                                               (priceMemo * order?.discount) /
-                                                100
-                                        )
-                                        : "0 ₫"} */}
-                                    Đã giảm giá
+                                                  100
+                                          )
+                                        : "0 ₫"}
+                                    {<br />}({order?.discount}%)
                                 </WrapperItem>
                             </WrapperProduct>
                         ))}

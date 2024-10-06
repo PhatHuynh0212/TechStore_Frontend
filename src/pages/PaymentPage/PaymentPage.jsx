@@ -30,7 +30,7 @@ const PaymentPage = () => {
     const user = useSelector((state) => state.user);
 
     const [delivery, setDelivery] = useState("fast");
-    const [payment, setPayment] = useState("Cash on Delivery (COD)");
+    const [payment, setPayment] = useState("later_money(COD)");
     const navigate = useNavigate();
     const [sdkReady, setSdkReady] = useState(false);
 
@@ -126,8 +126,6 @@ const PaymentPage = () => {
             });
         }
     };
-
-    console.log({ user, order });
 
     const mutationUpdate = useMutationHooks((data) => {
         const { id, token, ...rests } = data;

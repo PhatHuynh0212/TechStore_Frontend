@@ -51,7 +51,6 @@ const OrderPage = () => {
     });
 
     const onChange = (e) => {
-        console.log(`check = ${e.target.value}`);
         if (listChecked.includes(e.target.value)) {
             const newListChecked = listChecked.filter(
                 (item) => item !== e.target.value
@@ -62,11 +61,15 @@ const OrderPage = () => {
         }
     };
 
-    const handleChangeCount = (type, idProduct) => {
+    const handleChangeCount = (type, idProduct, limited) => {
         if (type === "increase") {
-            dispatch(increaseAmount({ idProduct }));
+            if (!limited) {
+                dispatch(increaseAmount({ idProduct }));
+            }
         } else {
-            dispatch(decreaseAmount({ idProduct }));
+            if (!limited) {
+                dispatch(decreaseAmount({ idProduct }));
+            }
         }
     };
 
@@ -376,7 +379,8 @@ const OrderPage = () => {
                                                     onClick={() =>
                                                         handleChangeCount(
                                                             "decrease",
-                                                            order?.product
+                                                            order?.product,
+                                                            order?.amount === 1
                                                         )
                                                     }
                                                 >
@@ -391,6 +395,8 @@ const OrderPage = () => {
                                                     defaultValue={order?.amount}
                                                     value={order?.amount}
                                                     size="small"
+                                                    min={1}
+                                                    max={order?.countInStock}
                                                 />
                                                 <button
                                                     style={{
@@ -402,7 +408,9 @@ const OrderPage = () => {
                                                     onClick={() =>
                                                         handleChangeCount(
                                                             "increase",
-                                                            order?.product
+                                                            order?.product,
+                                                            order?.amount ===
+                                                                order?.countInStock
                                                         )
                                                     }
                                                 >

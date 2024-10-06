@@ -53,14 +53,16 @@ const CardComponent = (props) => {
                     />
                 </span>
                 <WrapperStyleTextSell>
-                    | Sold {selled || 10}+
+                    | Sold {selled > 0 ? `${selled}+` : 0}
                 </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
                 <span style={{ marginRight: "3px" }}>
                     {convertPrice(price)}
                 </span>
-                <WrapperDiscountText>- {discount || 5}%</WrapperDiscountText>
+                <WrapperDiscountText>
+                    {discount > 0 ? `- ${discount}%` : null}
+                </WrapperDiscountText>
             </WrapperPriceText>
         </WrapperCardStyle>
     );
