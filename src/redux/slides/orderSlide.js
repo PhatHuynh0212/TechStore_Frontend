@@ -14,6 +14,8 @@ const initialState = {
     paidAt: "",
     isDelivered: false,
     deliveredAt: "",
+    isErrorOrder: false,
+    isSuccessOrder: false,
 };
 
 export const orderSlice = createSlice({
@@ -27,10 +29,19 @@ export const orderSlice = createSlice({
             );
             // Check nếu cùng 1 sp thêm vào giỏ hàng chỉ cần tăng số lượng
             if (itemOrder) {
-                itemOrder.amount += orderItem?.amount;
+                if (itemOrder.amount <= itemOrder.countInStock) {
+                    itemOrder.amount += orderItem?.amount;
+                    state.isSuccessOrder = true;
+                    state.isErrorOrder = false;
+                } else {
+                    state.isErrorOrder = true;
+                }
             } else {
                 state.orderItems.push(orderItem);
             }
+        },
+        resetStateOrder: (state) => {
+            state.isSuccessOrder = false;
         },
         increaseAmount: (state, action) => {
             const { idProduct } = action.payload;
@@ -104,6 +115,8 @@ export const orderSlice = createSlice({
             state.paidAt = "";
             state.isDelivered = false;
             state.deliveredAt = "";
+            state.isErrorOrder = false;
+            state.isSuccessOrder = false;
         },
     },
 });
@@ -111,6 +124,7 @@ export const orderSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
     addOrderProduct,
+    resetStateOrder,
     removeOrderProduct,
     increaseAmount,
     decreaseAmount,

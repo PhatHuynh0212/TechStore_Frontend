@@ -11,7 +11,7 @@ import {
     WrapperProduct,
     WrapperStyleContent,
 } from "./style";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as OrderService from "../../services/OrderService";
 import { useQuery } from "@tanstack/react-query";
 import { convertPrice } from "../../utils";
@@ -19,6 +19,7 @@ import Loading from "../../components/LoadingComponent/LoadingComponent";
 // // import { orderContant } from "../../contant";
 
 const DetailsOrderPage = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
     const params = useParams();
@@ -52,9 +53,24 @@ const DetailsOrderPage = () => {
                 style={{
                     width: "100%",
                     background: "#f5f5f5",
-                    padding: "30px 0",
+                    padding: "5px",
                 }}
             >
+                <p style={{ margin: "0 0 10px", padding: "0 103px" }}>
+                    <span
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => navigate("/")}
+                    >
+                        Home
+                    </span>{" "}
+                    <span
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => navigate("/my-order")}
+                    >
+                        - My order
+                    </span>{" "}
+                    - Order details
+                </p>
                 <div
                     style={{
                         width: "90%",
@@ -73,22 +89,22 @@ const DetailsOrderPage = () => {
                             marginBottom: "30px",
                         }}
                     >
-                        Chi tiết đơn hàng
+                        Order details
                     </div>
                     <WrapperHeaderUser>
                         {/* Địa chỉ người nhận */}
                         <WrapperInfoUser>
-                            <WrapperLabel>Địa chỉ người nhận</WrapperLabel>
+                            <WrapperLabel>Recipient address</WrapperLabel>
                             <WrapperContentInfo>
                                 <div className="name-info">
                                     {data?.shippingAddress?.fullName}
                                 </div>
                                 <div className="address-info">
-                                    <span>Địa chỉ: </span>
+                                    <span>Address: </span>
                                     {`${data?.shippingAddress?.address}, ${data?.shippingAddress?.city}`}
                                 </div>
                                 <div className="phone-info">
-                                    <span>Điện thoại: </span>{" "}
+                                    <span>Phone: </span>{" "}
                                     {data?.shippingAddress?.phone}
                                 </div>
                             </WrapperContentInfo>
@@ -96,14 +112,14 @@ const DetailsOrderPage = () => {
 
                         {/* Hình thức giao hàng */}
                         <WrapperInfoUser>
-                            <WrapperLabel>Hình thức giao hàng</WrapperLabel>
+                            <WrapperLabel>Delivery method</WrapperLabel>
                             <WrapperContentInfo>
                                 <div className="delivery-info">
                                     <span className="name-delivery">FAST </span>
-                                    Giao hàng tiết kiệm
+                                    Economy delivery
                                 </div>
                                 <div className="delivery-fee">
-                                    <span>Phí giao hàng: </span>{" "}
+                                    <span>Delivery fee: </span>{" "}
                                     {convertPrice(data?.shippingPrice)}
                                 </div>
                             </WrapperContentInfo>
@@ -111,7 +127,7 @@ const DetailsOrderPage = () => {
 
                         {/* Hình thức thanh toán */}
                         <WrapperInfoUser>
-                            <WrapperLabel>Hình thức thanh toán</WrapperLabel>
+                            <WrapperLabel>Payment method</WrapperLabel>
                             {/* <WrapperContentInfo>
                                 <div className="payment-info">
                                     {orderContant.payment[data?.paymentMethod]}
@@ -119,9 +135,7 @@ const DetailsOrderPage = () => {
                             </WrapperContentInfo> */}
                             <WrapperContentInfo>
                                 <div className="status-payment">
-                                    {data?.isPaid
-                                        ? "Đã thanh toán"
-                                        : "Chưa thanh toán"}
+                                    {data?.isPaid ? "Paid" : "Unpaid"}
                                 </div>
                             </WrapperContentInfo>
                         </WrapperInfoUser>
@@ -146,11 +160,11 @@ const DetailsOrderPage = () => {
                                     fontWeight: "bold",
                                 }}
                             >
-                                Sản phẩm
+                                Product
                             </div>
-                            <WrapperItemLabel>Giá</WrapperItemLabel>
-                            <WrapperItemLabel>Số lượng</WrapperItemLabel>
-                            <WrapperItemLabel>Giảm giá</WrapperItemLabel>
+                            <WrapperItemLabel>Price</WrapperItemLabel>
+                            <WrapperItemLabel>Amount</WrapperItemLabel>
+                            <WrapperItemLabel>Discount</WrapperItemLabel>
                         </div>
 
                         {data?.orderItems?.map((order) => (
@@ -177,20 +191,22 @@ const DetailsOrderPage = () => {
 
                         {/* Tổng kết giá */}
                         <WrapperAllPrice>
-                            <WrapperItemLabel>Tạm tính</WrapperItemLabel>
+                            <WrapperItemLabel>Provisional</WrapperItemLabel>
                             <WrapperItem>{convertPrice(priceMemo)}</WrapperItem>
                         </WrapperAllPrice>
 
                         <WrapperAllPrice>
-                            <WrapperItemLabel>Phí vận chuyển</WrapperItemLabel>
+                            <WrapperItemLabel>Delivery fee</WrapperItemLabel>
                             <WrapperItem>
                                 {convertPrice(data?.shippingPrice)}
                             </WrapperItem>
                         </WrapperAllPrice>
 
                         <WrapperAllPrice>
-                            <WrapperItemLabel>Tổng cộng</WrapperItemLabel>
-                            <WrapperItem>
+                            <WrapperItemLabel style={{ fontSize: 20 }}>
+                                TOTAL
+                            </WrapperItemLabel>
+                            <WrapperItem style={{ fontSize: 20 }}>
                                 {convertPrice(data?.totalPrice)}
                             </WrapperItem>
                         </WrapperAllPrice>

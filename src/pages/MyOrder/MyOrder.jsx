@@ -110,7 +110,15 @@ const MyOrder = () => {
                         margin: "0 auto",
                     }}
                 >
-                    <h4>Đơn hàng của tôi</h4>
+                    <p style={{ margin: "5px 0" }}>
+                        <span
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                            onClick={() => navigate("/")}
+                        >
+                            Home
+                        </span>{" "}
+                        - My order
+                    </p>
                     <WrapperListOrder>
                         {data?.map((order) => (
                             <WrapperItemOrder key={order?._id}>
@@ -121,7 +129,7 @@ const MyOrder = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        Trạng thái
+                                        Status
                                     </span>
                                     <div>
                                         <span
@@ -129,7 +137,7 @@ const MyOrder = () => {
                                                 color: "rgb(255, 66, 78)",
                                             }}
                                         >
-                                            Giao hàng:{" "}
+                                            Delivery:{" "}
                                         </span>
                                         <span
                                             style={{
@@ -139,8 +147,8 @@ const MyOrder = () => {
                                         >
                                             {`${
                                                 order.isDelivered
-                                                    ? "Đã giao hàng"
-                                                    : "Chưa giao hàng"
+                                                    ? "Delivered"
+                                                    : "Not delivered yet"
                                             }`}
                                         </span>
                                     </div>
@@ -150,7 +158,7 @@ const MyOrder = () => {
                                                 color: "rgb(255, 66, 78)",
                                             }}
                                         >
-                                            Thanh toán:{" "}
+                                            Payment:{" "}
                                         </span>
                                         <span
                                             style={{
@@ -159,9 +167,7 @@ const MyOrder = () => {
                                             }}
                                         >
                                             {`${
-                                                order.isPaid
-                                                    ? "Đã thanh toán"
-                                                    : "Chưa thanh toán"
+                                                order.isPaid ? "Paid" : "Unpaid"
                                             }`}
                                         </span>
                                     </div>
@@ -203,7 +209,7 @@ const MyOrder = () => {
                                                 color: "#9255FD",
                                                 fontSize: "14px",
                                             }}
-                                            textButton={"Hủy Đơn Hàng"}
+                                            textButton={"Cancel order"}
                                         />
 
                                         <ButtonComponent
@@ -218,7 +224,7 @@ const MyOrder = () => {
                                                 color: "#9255FD",
                                                 fontSize: "14px",
                                             }}
-                                            textButton={"Xem chi tiết"}
+                                            textButton={"Order details"}
                                         />
                                     </div>
                                 </WrapperFooterItem>

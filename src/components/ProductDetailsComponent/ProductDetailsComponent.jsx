@@ -1,6 +1,5 @@
 import { Col, Image, Rate, Row } from "antd";
-import React, { useState } from "react";
-import imgSmall from "../../assets/images/imgsmall.webp";
+import React, { useEffect, useState } from "react";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import * as ProductService from "../../services/ProductService";
@@ -20,14 +19,20 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../LoadingComponent/LoadingComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
-import { addOrderProduct } from "../../redux/slides/orderSlide";
+import {
+    addOrderProduct,
+    resetStateOrder,
+} from "../../redux/slides/orderSlide";
 import { convertPrice } from "../../utils";
+import * as Message from "../../components/Message/Message";
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [numProduct, setNumProduct] = useState(1);
-    const user = useSelector((state) => state.user);
+    const [errorLimitOrder, setErrorLimitOrder] = useState(false);
+    const user = useSelector((state) => state?.user);
+    const order = useSelector((state) => state?.order);
     const dispatch = useDispatch();
 
     const onChange = (e) => {
@@ -43,6 +48,21 @@ const ProductDetailsComponent = ({ idProduct }) => {
         return null;
     };
 
+    useEffect(() => {
+        const orderRedux = order?.orderItems?.find(
+            (item) => item.product === productDetails?._id
+        );
+        console.log("orderRedux: ", orderRedux);
+        if (
+            orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
+            !orderRedux
+        ) {
+            setErrorLimitOrder(false);
+        } else {
+            setErrorLimitOrder(true);
+        }
+    }, [numProduct]);
+
     const query = useQuery({
         queryKey: ["product-details", idProduct],
         queryFn: fetchGetDetailsProduct,
@@ -50,11 +70,27 @@ const ProductDetailsComponent = ({ idProduct }) => {
     });
     const { isLoading, data: productDetails } = query;
 
-    const handleChangeCount = (type) => {
+    useEffect(() => {
+        if (order?.isSuccessOrder) {
+            Message.success("Added to cart");
+        }
+        // else {
+        //     Message.warning("Product was out of stock");
+        // }
+        return () => {
+            dispatch(resetStateOrder());
+        };
+    }, [order?.isSuccessOrder]);
+
+    const handleChangeCount = (type, limited) => {
         if (type === "increase") {
-            setNumProduct(numProduct + 1);
+            if (!limited) {
+                setNumProduct(numProduct + 1);
+            }
         } else {
-            setNumProduct(numProduct - 1);
+            if (!limited) {
+                setNumProduct(numProduct - 1);
+            }
         }
     };
 
@@ -62,20 +98,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
         if (!user?.id) {
             navigate("/sign-in", { state: location?.pathname });
         } else {
-            dispatch(
-                addOrderProduct({
-                    orderItem: {
-                        name: productDetails?.name,
-                        amount: numProduct,
-                        image: productDetails?.image,
-                        price: productDetails?.price,
-                        product: productDetails?._id,
-                        discount: productDetails?.discount,
-                        countInStock: productDetails?.countInStock,
-                        selled: productDetails?.selled,
-                    },
-                })
+            const orderRedux = order?.orderItems?.find(
+                (item) => item.product === productDetails?._id
             );
+            if (
+                orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
+                !orderRedux
+            ) {
+                dispatch(
+                    addOrderProduct({
+                        orderItem: {
+                            name: productDetails?.name,
+                            amount: numProduct,
+                            image: productDetails?.image,
+                            price: productDetails?.price,
+                            product: productDetails?._id,
+                            discount: productDetails?.discount,
+                            countInStock: productDetails?.countInStock,
+                            selled: productDetails?.selled,
+                        },
+                    })
+                );
+            } else {
+                setErrorLimitOrder(true);
+            }
         }
     };
 
@@ -177,7 +223,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         <span>Quantity</span>
                         <WrapperQuantityProduct>
                             <WrapperButton
-                                onClick={() => handleChangeCount("decrease")}
+                                onClick={() =>
+                                    handleChangeCount(
+                                        "decrease",
+                                        numProduct === 1
+                                    )
+                                }
                             >
                                 <MinusOutlined
                                     style={{ color: "#000", fontSize: "20px" }}
@@ -186,9 +237,17 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             <WrapperInputNumber
                                 defaultValue={1}
                                 value={numProduct}
+                                min={1}
+                                max={productDetails?.countInStock}
                             />
                             <WrapperButton
-                                onClick={() => handleChangeCount("increase")}
+                                onClick={() =>
+                                    handleChangeCount(
+                                        "increase",
+                                        numProduct ===
+                                            productDetails?.countInStock
+                                    )
+                                }
                             >
                                 <PlusOutlined
                                     style={{ color: "#000", fontSize: "20px" }}
@@ -220,6 +279,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             textButton={"Add to cart"}
                             onClick={handleAddOrderProduct}
                         />
+                        {errorLimitOrder && (
+                            <div style={{ color: "red" }}>
+                                Product was out of stock!
+                            </div>
+                        )}
                         <ButtonComponent
                             size={40}
                             styleButton={{
