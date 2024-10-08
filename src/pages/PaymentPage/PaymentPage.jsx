@@ -73,12 +73,12 @@ const PaymentPage = () => {
 
     const priceDiscountMemo = useMemo(() => {
         const result = order?.orderItemsSelected?.reduce((total, cur) => {
-            return total + cur.discount;
+            const discountAmount =
+                cur.price * cur.amount * (cur.discount / 100);
+            return total + discountAmount;
         }, 0);
-        if (Number(result)) {
-            return result;
-        }
-        return 0;
+        // Nếu có giảm giá, trả về số tiền giảm giá, nếu không thì trả về 0
+        return result > 0 ? result : 0;
     }, [order]);
 
     const deliveryFeeMemo = useMemo(() => {
@@ -92,12 +92,13 @@ const PaymentPage = () => {
     }, [priceMemo]);
 
     const totalPriceMemo = useMemo(() => {
-        const result =
-            Number(priceMemo) -
-            (Number(priceDiscountMemo) * Number(priceMemo)) / 100 +
-            Number(deliveryFeeMemo);
-        return result;
-    }, [priceMemo, priceDiscountMemo, deliveryFeeMemo]);
+        const result = order?.orderItemsSelected?.reduce((total, cur) => {
+            const priceAfterDiscount =
+                cur.price * (1 - cur.discount / 100) * cur.amount;
+            return total + priceAfterDiscount;
+        }, 0);
+        return result + Number(deliveryFeeMemo);
+    }, [order, deliveryFeeMemo]);
 
     const handleAddOrder = () => {
         if (
@@ -370,7 +371,7 @@ const PaymentPage = () => {
                                                 fontWeight: "bold",
                                             }}
                                         >
-                                            {priceDiscountMemo}%
+                                            {convertPrice(priceDiscountMemo)}
                                         </span>
                                     </div>
                                     <div

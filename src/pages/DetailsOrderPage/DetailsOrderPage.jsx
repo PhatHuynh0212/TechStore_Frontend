@@ -180,7 +180,9 @@ const DetailsOrderPage = () => {
                                 <WrapperItem>
                                     {order?.discount
                                         ? convertPrice(
-                                              (priceMemo * order?.discount) /
+                                              (order?.price *
+                                                  order?.discount *
+                                                  order?.amount) /
                                                   100
                                           )
                                         : "0 ₫"}
