@@ -156,9 +156,9 @@ const SignInPage = () => {
                             textButton={"Sign In"}
                         />
                     </Loading>
-                    <p>
+                    {/* <p>
                         <WrapperTextLight>Forgot password?</WrapperTextLight>
-                    </p>
+                    </p> */}
                     <p>
                         No account?{" "}
                         <WrapperTextLight onClick={handleNavigateSignUp}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     WrapperContent,
     WrapperLabelText,
@@ -6,11 +6,25 @@ import {
     WrapperTextValue,
 } from "./style";
 import { Checkbox, Rate } from "antd";
+import * as ProductService from "../../services/ProductService";
+import { useNavigate } from "react-router";
 
 const NavBarComponent = () => {
-    const onChange = (checkedValues) => {
-        console.log("checked = ", checkedValues);
+    const [typeProducts, setTypeProducts] = useState([]);
+    const navigate = useNavigate();
+
+    const handleNavigateType = (type) => {
+        // Điều chỉnh lại url nếu có dấu
+        navigate(
+            `/product/${type
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                ?.replace(/ /g, "_")}`,
+            { state: type }
+        );
     };
+
+    const onChange = (checkedValues) => {};
 
     const renderContent = (type, options) => {
         switch (type) {
@@ -69,11 +83,34 @@ const NavBarComponent = () => {
         }
     };
 
+    // Fetch all type product
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        if (res?.status === "OK") {
+            setTypeProducts(res?.data);
+        }
+        return res;
+    };
+
+    useEffect(() => {
+        fetchAllTypeProduct();
+    }, []);
+
     return (
         <div style={{ background: "#fff" }}>
             <WrapperLabelText>Category</WrapperLabelText>
             <WrapperContent>
-                {renderContent("text", ["Cellphone", "Tablet", "Laptop", "PC"])}
+                {typeProducts?.map((item, index) => {
+                    return (
+                        <div
+                            key={index}
+                            style={{ marginLeft: 15, cursor: "pointer" }}
+                            onClick={() => handleNavigateType(item)}
+                        >
+                            {item}
+                        </div>
+                    );
+                })}
             </WrapperContent>
             <WrapperLabelText>Services</WrapperLabelText>
             <WrapperContent>

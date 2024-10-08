@@ -67,13 +67,32 @@ const TableComponent = (props) => {
         "__v",
         "key",
         "avatar",
+        "orderItems",
     ];
 
-    // Hàm lọc bỏ các cột không mong muốn
+    // Hàm flatten object lồng nhau
+    const flattenObject = (obj, parent = "", res = {}) => {
+        for (let key in obj) {
+            if (Object.hasOwnProperty.call(obj, key)) {
+                const propName = parent ? `${parent}_${key}` : key;
+                if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+                    flattenObject(obj[key], propName, res);
+                } else {
+                    res[propName] = obj[key];
+                }
+            }
+        }
+        return res;
+    };
+
+    // Hàm lọc bỏ các cột không mong muốn và flatten dữ liệu
     const filterColumns = (data) => {
         return data.map((row) => {
+            // Flatten object lồng nhau
+            const flattenedRow = flattenObject(row);
+            // Lọc bỏ các cột không cần thiết
             return Object.fromEntries(
-                Object.entries(row).filter(
+                Object.entries(flattenedRow).filter(
                     ([key, value]) => !excludedColumns.includes(key)
                 )
             );
@@ -82,7 +101,7 @@ const TableComponent = (props) => {
 
     // Hàm export dữ liệu ra Excel
     const exportToExcel = async () => {
-        const filteredData = filterColumns(data); // Lọc dữ liệu
+        const filteredData = filterColumns(data); // Lọc và flatten dữ liệu
         const workbook = new ExcelJS.Workbook(); // Tạo workbook mới
         const worksheet = workbook.addWorksheet("Sheet1"); // Thêm sheet vào workbook
 
@@ -151,10 +170,12 @@ const TableComponent = (props) => {
 
                 <Table
                     pagination={{ pageSize: 8 }}
-                    rowSelection={{
-                        type: selectionType,
-                        ...rowSelection,
-                    }}
+                    {...(selectionType && {
+                        rowSelection: {
+                            type: selectionType,
+                            ...rowSelection,
+                        },
+                    })}
                     columns={columns}
                     dataSource={data}
                     {...props}

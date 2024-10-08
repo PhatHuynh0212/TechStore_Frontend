@@ -52,7 +52,20 @@ export const cancelOrder = async (id, access_token, orderItems) => {
 
 export const getAllOrder = async (access_token) => {
     const res = await axiosJWT.get(
-        `${process.env.REACT_APP_API_URL}/order/get-all-order`,
+        `${process.env.REACT_APP_API_URL}/order/get-all`,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const updateOrder = async (id, access_token, data) => {
+    const res = await axiosJWT.put(
+        `${process.env.REACT_APP_API_URL}/order/update/${id}`,
+        data,
         {
             headers: {
                 token: `Bearer ${access_token}`,

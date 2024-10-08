@@ -30,7 +30,7 @@ const PaymentPage = () => {
     const user = useSelector((state) => state.user);
 
     const [delivery, setDelivery] = useState("fast");
-    const [payment, setPayment] = useState("later_money(COD)");
+    const [payment, setPayment] = useState("later_money");
     const navigate = useNavigate();
     const [sdkReady, setSdkReady] = useState(false);
 
@@ -285,7 +285,7 @@ const PaymentPage = () => {
                                     onChange={handlePayment}
                                     value={payment}
                                 >
-                                    <Radio value="later_money(COD)">
+                                    <Radio value="later_money">
                                         Cash on Delivery (COD)
                                     </Radio>
                                 </WrapperRadio>

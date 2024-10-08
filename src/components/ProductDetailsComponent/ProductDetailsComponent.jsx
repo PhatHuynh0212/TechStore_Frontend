@@ -9,6 +9,7 @@ import {
     WrapperInputNumber,
     WrapperPriceProduct,
     WrapperPriceTextProduct,
+    WrapperQuantity,
     WrapperQuantityProduct,
     WrapperStyleColImage,
     WrapperStyleImageSmall,
@@ -52,13 +53,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
         const orderRedux = order?.orderItems?.find(
             (item) => item.product === productDetails?._id
         );
-        console.log("orderRedux: ", orderRedux);
         if (
             orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
-            !orderRedux
+            (!orderRedux && productDetails?.countInStock > 0)
         ) {
             setErrorLimitOrder(false);
-        } else {
+        } else if (productDetails?.countInStock === 0) {
             setErrorLimitOrder(true);
         }
     }, [numProduct]);
@@ -221,39 +221,54 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <hr />
                     <div style={{ margin: "10px 0 20px" }}>
                         <span>Quantity</span>
-                        <WrapperQuantityProduct>
-                            <WrapperButton
-                                onClick={() =>
-                                    handleChangeCount(
-                                        "decrease",
-                                        numProduct === 1
-                                    )
-                                }
-                            >
-                                <MinusOutlined
-                                    style={{ color: "#000", fontSize: "20px" }}
+                        <WrapperQuantity>
+                            <WrapperQuantityProduct>
+                                <WrapperButton
+                                    onClick={() =>
+                                        handleChangeCount(
+                                            "decrease",
+                                            numProduct === 1
+                                        )
+                                    }
+                                >
+                                    <MinusOutlined
+                                        style={{
+                                            color: "#000",
+                                            fontSize: "20px",
+                                        }}
+                                    />
+                                </WrapperButton>
+                                <WrapperInputNumber
+                                    defaultValue={1}
+                                    value={numProduct}
+                                    min={1}
+                                    max={productDetails?.countInStock}
                                 />
-                            </WrapperButton>
-                            <WrapperInputNumber
-                                defaultValue={1}
-                                value={numProduct}
-                                min={1}
-                                max={productDetails?.countInStock}
-                            />
-                            <WrapperButton
-                                onClick={() =>
-                                    handleChangeCount(
-                                        "increase",
-                                        numProduct ===
-                                            productDetails?.countInStock
-                                    )
-                                }
-                            >
-                                <PlusOutlined
-                                    style={{ color: "#000", fontSize: "20px" }}
-                                />
-                            </WrapperButton>
-                        </WrapperQuantityProduct>
+                                <WrapperButton
+                                    onClick={() =>
+                                        handleChangeCount(
+                                            "increase",
+                                            numProduct ===
+                                                productDetails?.countInStock
+                                        )
+                                    }
+                                >
+                                    <PlusOutlined
+                                        style={{
+                                            color: "#000",
+                                            fontSize: "20px",
+                                        }}
+                                    />
+                                </WrapperButton>
+                            </WrapperQuantityProduct>
+                            <div>
+                                {errorLimitOrder && (
+                                    <div style={{ color: "red" }}>
+                                        Product was out of stock!
+                                    </div>
+                                )}
+                            </div>
+                        </WrapperQuantity>
                     </div>
                     <hr />
                     <div
@@ -279,11 +294,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             textButton={"Add to cart"}
                             onClick={handleAddOrderProduct}
                         />
-                        {errorLimitOrder && (
-                            <div style={{ color: "red" }}>
-                                Product was out of stock!
-                            </div>
-                        )}
                         <ButtonComponent
                             size={40}
                             styleButton={{

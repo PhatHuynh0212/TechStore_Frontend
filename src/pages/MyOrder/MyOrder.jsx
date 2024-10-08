@@ -120,116 +120,129 @@ const MyOrder = () => {
                         - My order
                     </p>
                     <WrapperListOrder>
-                        {data?.map((order) => (
-                            <WrapperItemOrder key={order?._id}>
-                                <WrapperStatus>
-                                    <span
-                                        style={{
-                                            fontSize: "14px",
-                                            fontWeight: "bold",
-                                        }}
-                                    >
-                                        Status
-                                    </span>
-                                    <div>
+                        {Array.isArray(data) && data.length > 0 ? (
+                            data.map((order) => (
+                                <WrapperItemOrder key={order?._id}>
+                                    <WrapperStatus>
                                         <span
                                             style={{
-                                                color: "rgb(255, 66, 78)",
-                                            }}
-                                        >
-                                            Delivery:{" "}
-                                        </span>
-                                        <span
-                                            style={{
-                                                color: "rgb(90, 32, 193)",
+                                                fontSize: "14px",
                                                 fontWeight: "bold",
                                             }}
                                         >
-                                            {`${
-                                                order.isDelivered
-                                                    ? "Delivered"
-                                                    : "Not delivered yet"
-                                            }`}
+                                            Status
                                         </span>
-                                    </div>
-                                    <div>
-                                        <span
-                                            style={{
-                                                color: "rgb(255, 66, 78)",
-                                            }}
-                                        >
-                                            Payment:{" "}
-                                        </span>
-                                        <span
-                                            style={{
-                                                color: "rgb(90, 32, 193)",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {`${
-                                                order.isPaid ? "Paid" : "Unpaid"
-                                            }`}
-                                        </span>
-                                    </div>
-                                </WrapperStatus>
+                                        <div>
+                                            <span
+                                                style={{
+                                                    color: "rgb(255, 66, 78)",
+                                                }}
+                                            >
+                                                Delivery:{" "}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    color: "rgb(90, 32, 193)",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                {`${
+                                                    order.isDelivered
+                                                        ? "Delivered"
+                                                        : "Not delivered yet"
+                                                }`}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span
+                                                style={{
+                                                    color: "rgb(255, 66, 78)",
+                                                }}
+                                            >
+                                                Payment:{" "}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    color: "rgb(90, 32, 193)",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                {`${
+                                                    order.isPaid
+                                                        ? "Paid"
+                                                        : "Unpaid"
+                                                }`}
+                                            </span>
+                                        </div>
+                                    </WrapperStatus>
 
-                                {renderProduct(order?.orderItems)}
+                                    {renderProduct(order?.orderItems)}
 
-                                <WrapperFooterItem>
-                                    <div>
-                                        <span
+                                    <WrapperFooterItem>
+                                        <div>
+                                            <span
+                                                style={{
+                                                    color: "rgb(255, 66, 78)",
+                                                }}
+                                            >
+                                                Tổng tiền:{" "}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: "13px",
+                                                    color: "rgb(56, 56, 61)",
+                                                    fontWeight: 700,
+                                                }}
+                                            >
+                                                {convertPrice(
+                                                    order?.totalPrice
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div
                                             style={{
-                                                color: "rgb(255, 66, 78)",
+                                                display: "flex",
+                                                gap: "10px",
                                             }}
                                         >
-                                            Tổng tiền:{" "}
-                                        </span>
-                                        <span
-                                            style={{
-                                                fontSize: "13px",
-                                                color: "rgb(56, 56, 61)",
-                                                fontWeight: 700,
-                                            }}
-                                        >
-                                            {convertPrice(order?.totalPrice)}
-                                        </span>
-                                    </div>
-                                    <div
-                                        style={{ display: "flex", gap: "10px" }}
-                                    >
-                                        <ButtonComponent
-                                            onClick={() =>
-                                                handleCancelOrder(order)
-                                            }
-                                            size={40}
-                                            styleButton={{
-                                                height: "36px",
-                                                border: "1px solid #9255FD",
-                                                borderRadius: "4px",
-                                                color: "#9255FD",
-                                                fontSize: "14px",
-                                            }}
-                                            textButton={"Cancel order"}
-                                        />
+                                            <ButtonComponent
+                                                onClick={() =>
+                                                    handleCancelOrder(order)
+                                                }
+                                                size={40}
+                                                styleButton={{
+                                                    height: "36px",
+                                                    border: "1px solid #9255FD",
+                                                    borderRadius: "4px",
+                                                    color: "#9255FD",
+                                                    fontSize: "14px",
+                                                }}
+                                                textButton={"Cancel order"}
+                                            />
 
-                                        <ButtonComponent
-                                            onClick={() =>
-                                                handleDetailsOrder(order?._id)
-                                            }
-                                            size={40}
-                                            styleButton={{
-                                                height: "36px",
-                                                border: "1px solid #9255FD",
-                                                borderRadius: "4px",
-                                                color: "#9255FD",
-                                                fontSize: "14px",
-                                            }}
-                                            textButton={"Order details"}
-                                        />
-                                    </div>
-                                </WrapperFooterItem>
-                            </WrapperItemOrder>
-                        ))}
+                                            <ButtonComponent
+                                                onClick={() =>
+                                                    handleDetailsOrder(
+                                                        order?._id
+                                                    )
+                                                }
+                                                size={40}
+                                                styleButton={{
+                                                    height: "36px",
+                                                    border: "1px solid #9255FD",
+                                                    borderRadius: "4px",
+                                                    color: "#9255FD",
+                                                    fontSize: "14px",
+                                                }}
+                                                textButton={"Order details"}
+                                            />
+                                        </div>
+                                    </WrapperFooterItem>
+                                </WrapperItemOrder>
+                            ))
+                        ) : (
+                            <p>No orders found</p>
+                        )}
                     </WrapperListOrder>
                 </div>
             </WrapperContainer>

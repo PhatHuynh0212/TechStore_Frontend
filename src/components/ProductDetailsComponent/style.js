@@ -67,13 +67,19 @@ export const WrapperAddressProduct = styled.div`
 `;
 
 export const WrapperQuantityProduct = styled.div`
-    margin-top: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
     width: 120px;
     border: 1px solid #ccc;
+`;
+
+export const WrapperQuantity = styled.div`
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
 `;
 
 export const WrapperInputNumber = styled(InputNumber)`
