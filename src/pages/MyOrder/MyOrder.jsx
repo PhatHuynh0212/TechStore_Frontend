@@ -315,9 +315,13 @@ const MyOrder = () => {
     } = mutation;
 
     useEffect(() => {
-        if (isSuccessCancel && dataCancel?.status === "OK") {
+        if (isSuccessCancel && dataCancel && dataCancel?.status === "OK") {
             message.success();
-        } else if (isSuccessCancel && dataCancel?.status === "ERR") {
+        } else if (
+            isSuccessCancel &&
+            dataCancel &&
+            dataCancel?.status === "ERR"
+        ) {
             message.error(dataCancel?.message);
         } else if (isErrorCancel) {
             message.error();
@@ -500,7 +504,7 @@ const MyOrder = () => {
             {/* Modal xác nhận */}
             <Modal
                 title="Confirm cancel order!"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 okText="Yes"
