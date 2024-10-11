@@ -24,7 +24,7 @@ const HomePage = () => {
     const searchDebounce = useDebounce(searchProduct, 0);
     const [loading, setLoading] = useState(false);
     // Số lượng product hiển thị ở Trang Chủ
-    const [limit, setLimit] = useState(5);
+    const [limit, setLimit] = useState(10);
     const [typeProducts, setTypeProducts] = useState([]);
 
     const fetchProductAll = async (context) => {
