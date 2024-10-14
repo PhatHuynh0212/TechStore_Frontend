@@ -234,6 +234,16 @@ const OrderPage = () => {
         },
     ];
 
+    // Check all sản phẩm khi vào trang order
+    useEffect(() => {
+        if (order?.orderItems?.length) {
+            const allListChecked = order?.orderItems?.map(
+                (item) => item?.product
+            );
+            setListChecked(allListChecked);
+        }
+    }, [order?.orderItems]);
+
     return (
         <div
             style={{
@@ -365,9 +375,11 @@ const OrderPage = () => {
                                                 >
                                                     {convertPrice(order?.price)}
                                                 </span>
-                                                <WrapperPriceDiscount>
-                                                    -{order?.discount}%
-                                                </WrapperPriceDiscount>
+                                                {order?.discount > 0 && (
+                                                    <WrapperPriceDiscount>
+                                                        -{order?.discount}%
+                                                    </WrapperPriceDiscount>
+                                                )}
                                             </span>
                                             <WrapperCountOrder>
                                                 <button

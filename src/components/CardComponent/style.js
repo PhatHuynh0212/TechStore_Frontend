@@ -14,8 +14,11 @@ export const WrapperCardStyle = styled(Card)`
 export const StyleNameProduct = styled.div`
     font-size: 1.6rem;
     font-weight: bold;
-    line-height: 1.6rem;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 8px;
 `;
 
 export const WrapperReportText = styled.div`

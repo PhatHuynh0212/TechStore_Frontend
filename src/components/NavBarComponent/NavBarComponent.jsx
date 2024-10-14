@@ -112,7 +112,7 @@ const NavBarComponent = () => {
                     );
                 })}
             </WrapperContent>
-            <WrapperLabelText>Services</WrapperLabelText>
+            {/* <WrapperLabelText>Services</WrapperLabelText>
             <WrapperContent>
                 {renderContent("checkbox", [
                     { value: "a", label: "Free ship" },
@@ -138,7 +138,7 @@ const NavBarComponent = () => {
                     "Over 500.000",
                     "Over 5.000.000",
                 ])}
-            </WrapperContent>
+            </WrapperContent> */}
         </div>
     );
 };

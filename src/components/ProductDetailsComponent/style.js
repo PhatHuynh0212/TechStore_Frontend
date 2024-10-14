@@ -16,7 +16,7 @@ export const WrapperStyleColImage = styled(Col)`
 export const WrapperStyleNameProduct = styled.h1`
     color: #242424;
     font-size: 2.4rem;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 3.2rem;
     word-break: break-word;
 `;
@@ -63,6 +63,7 @@ export const WrapperAddressProduct = styled.div`
         line-height: 2.4rem;
         font-weight: 500;
         flex-shrink: 0;
+        cursor: pointer;
     }
 `;
 
@@ -94,5 +95,18 @@ export const WrapperInputNumber = styled(InputNumber)`
     }
     & .ant-input-number-input {
         text-align: center;
+    }
+`;
+
+export const WrapperProductDescription = styled.div`
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    color: #787878;
+    margin: 20px 0;
+
+    .toggle-description {
+        color: #0b74e5;
+        cursor: pointer;
+        font-weight: 500;
     }
 `;

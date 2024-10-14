@@ -28,3 +28,11 @@ export const WrapperPagination = styled(Pagination)`
     display: flex;
     justify-content: center;
 `;
+
+export const WrapperTypeProduct = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    justify-content: flex-start;
+    height: 45px;
+`;

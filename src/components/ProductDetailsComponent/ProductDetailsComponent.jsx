@@ -9,6 +9,7 @@ import {
     WrapperInputNumber,
     WrapperPriceProduct,
     WrapperPriceTextProduct,
+    WrapperProductDescription,
     WrapperQuantity,
     WrapperQuantityProduct,
     WrapperStyleColImage,
@@ -32,12 +33,17 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const location = useLocation();
     const [numProduct, setNumProduct] = useState(1);
     const [errorLimitOrder, setErrorLimitOrder] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
     const user = useSelector((state) => state?.user);
     const order = useSelector((state) => state?.order);
     const dispatch = useDispatch();
 
     const onChange = (e) => {
         setNumProduct(Number(e.target.value));
+    };
+
+    const toggleExpandDescription = () => {
+        setIsExpanded(!isExpanded);
     };
 
     const fetchGetDetailsProduct = async (context) => {
@@ -138,7 +144,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <Image
                         src={productDetails?.image}
                         alt="Product image"
-                        preview={false}
+                        // preview={false}
                     />
                     <Row
                         style={{
@@ -204,7 +210,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         {/* Sale */}
                         <WrapperStyleTextSell>
                             {" "}
-                            | Sold 1000+
+                            | Sold{" "}
+                            {productDetails?.selled > 0
+                                ? `${productDetails?.selled}+`
+                                : 0}
                         </WrapperStyleTextSell>
                     </div>
                     <WrapperPriceProduct>
@@ -212,11 +221,35 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             {convertPrice(productDetails?.price)}
                         </WrapperPriceTextProduct>
                     </WrapperPriceProduct>
+                    <WrapperProductDescription>
+                        {isExpanded
+                            ? productDetails?.description
+                            : `${productDetails?.description?.slice(
+                                  0,
+                                  100
+                              )}...`}
+                        {productDetails?.description?.length > 100 && (
+                            <span
+                                onClick={toggleExpandDescription}
+                                className="toggle-description"
+                            >
+                                {isExpanded ? " Shorten" : " See more"}
+                            </span>
+                        )}
+                    </WrapperProductDescription>
+                    <hr />
                     <WrapperAddressProduct>
                         <span>Delivered to </span>
-                        <span className="address">{user?.address}</span>
+                        <span className="address">
+                            {user?.address} - {user?.city}
+                        </span>
                         {" - "}
-                        <span className="change-address">Change address</span>
+                        <span
+                            className="change-address"
+                            onClick={() => navigate("/profile-user")}
+                        >
+                            Change address
+                        </span>
                     </WrapperAddressProduct>
                     <hr />
                     <div style={{ margin: "10px 0 20px" }}>
@@ -295,6 +328,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             onClick={handleAddOrderProduct}
                         />
                         <ButtonComponent
+                            disabled
                             size={40}
                             styleButton={{
                                 color: "#0D5CB6 ",
@@ -305,6 +339,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 width: "220px",
                                 border: "1px solid #0D5CB6 ",
                                 borderRadius: "4px",
+                                cursor: "not-allowed",
                             }}
                             textButton={"Pay later"}
                         />
