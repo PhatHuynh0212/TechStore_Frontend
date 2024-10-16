@@ -81,7 +81,13 @@ const TypeProductPage = () => {
                     })}
                 </WrapperTypeProduct>
             </div>
-            <div style={{ width: "100%", background: "#efefef" }}>
+            <div
+                style={{
+                    width: "100%",
+                    minHeight: "84vh",
+                    background: "#efefef",
+                }}
+            >
                 <div style={{ width: "1270px", margin: "0 auto" }}>
                     <WrapperContent>
                         <WrapperNavbar span={4}>

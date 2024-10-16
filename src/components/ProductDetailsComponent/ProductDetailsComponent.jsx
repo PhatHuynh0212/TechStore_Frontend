@@ -1,7 +1,11 @@
-import { Col, Image, Rate, Row } from "antd";
+import { Col, Image, Popover, Rate, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
-import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+    CheckCircleTwoTone,
+    MinusOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 import * as ProductService from "../../services/ProductService";
 import {
     WrapperAddressProduct,
@@ -16,6 +20,7 @@ import {
     WrapperStyleImageSmall,
     WrapperStyleNameProduct,
     WrapperStyleTextSell,
+    OutOfStockMessage,
 } from "./style";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../LoadingComponent/LoadingComponent";
@@ -26,7 +31,6 @@ import {
     resetStateOrder,
 } from "../../redux/slides/orderSlide";
 import { convertPrice } from "../../utils";
-import * as Message from "../../components/Message/Message";
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const navigate = useNavigate();
@@ -34,6 +38,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1);
     const [errorLimitOrder, setErrorLimitOrder] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showPopover, setShowPopover] = useState(false);
     const user = useSelector((state) => state?.user);
     const order = useSelector((state) => state?.order);
     const dispatch = useDispatch();
@@ -77,12 +82,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const { isLoading, data: productDetails } = query;
 
     useEffect(() => {
-        if (order?.isSuccessOrder) {
-            Message.success("Added to cart");
-        }
-        // else {
-        //     Message.warning("Product was out of stock");
-        // }
         return () => {
             dispatch(resetStateOrder());
         };
@@ -111,6 +110,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
                 !orderRedux
             ) {
+                setShowPopover(true);
+                setTimeout(() => setShowPopover(false), 2000);
                 dispatch(
                     addOrderProduct({
                         orderItem: {
@@ -296,9 +297,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             </WrapperQuantityProduct>
                             <div>
                                 {errorLimitOrder && (
-                                    <div style={{ color: "red" }}>
+                                    <OutOfStockMessage>
                                         Product was out of stock!
-                                    </div>
+                                    </OutOfStockMessage>
                                 )}
                             </div>
                         </WrapperQuantity>
@@ -312,21 +313,34 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             gap: "20px",
                         }}
                     >
-                        <ButtonComponent
-                            size={40}
-                            styleButton={{
-                                color: "#fff",
-                                fontSize: "1.8rem",
-                                fontWeight: "600",
-                                background: "#FF3945",
-                                height: "50px",
-                                width: "220px",
-                                border: "none",
-                                borderRadius: "4px",
-                            }}
-                            textButton={"Add to cart"}
-                            onClick={handleAddOrderProduct}
-                        />
+                        <div>
+                            <Popover
+                                content={
+                                    <span>
+                                        <CheckCircleTwoTone twoToneColor="#52c41a" />{" "}
+                                        Added to cart!
+                                    </span>
+                                }
+                                visible={showPopover}
+                                placement="bottom"
+                            >
+                                <ButtonComponent
+                                    size={40}
+                                    styleButton={{
+                                        color: "#fff",
+                                        fontSize: "1.8rem",
+                                        fontWeight: "600",
+                                        background: "#FF3945",
+                                        height: "50px",
+                                        width: "220px",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                    }}
+                                    textButton={"Add to cart"}
+                                    onClick={handleAddOrderProduct}
+                                />
+                            </Popover>
+                        </div>
                         <ButtonComponent
                             disabled
                             size={40}

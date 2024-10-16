@@ -1,4 +1,4 @@
-import { Col, Image, InputNumber } from "antd";
+import { Col, Image, InputNumber, Popover } from "antd";
 import styled from "styled-components";
 
 export const WrapperStyleImageSmall = styled(Image)`
@@ -109,4 +109,16 @@ export const WrapperProductDescription = styled.div`
         cursor: pointer;
         font-weight: 500;
     }
+`;
+
+export const OutOfStockMessage = styled.div`
+    color: #ff4d4f;
+    font-size: 1.6rem;
+    font-weight: bold;
+    background-color: #fff2f0;
+    padding: 10px;
+    border: 1px solid #ff4d4f;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;

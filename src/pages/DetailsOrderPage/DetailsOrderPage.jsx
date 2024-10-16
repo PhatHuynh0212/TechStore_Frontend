@@ -16,7 +16,6 @@ import * as OrderService from "../../services/OrderService";
 import { useQuery } from "@tanstack/react-query";
 import { convertPrice } from "../../utils";
 import Loading from "../../components/LoadingComponent/LoadingComponent";
-// // import { orderContant } from "../../contant";
 
 const DetailsOrderPage = () => {
     const navigate = useNavigate();
@@ -134,6 +133,7 @@ const DetailsOrderPage = () => {
                                 </div>
                             </WrapperContentInfo> */}
                             <WrapperContentInfo>
+                                <div>Cash on Delivery</div>
                                 <div className="status-payment">
                                     {data?.isPaid ? "Paid" : "Unpaid"}
                                 </div>

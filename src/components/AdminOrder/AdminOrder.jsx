@@ -1,9 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { WrapperHeader } from "./style";
-import { EditTwoTone, SearchOutlined } from "@ant-design/icons";
+import {
+    WrapperAllPrice,
+    WrapperContentInfo,
+    WrapperHeader,
+    WrapperHeaderUser,
+    WrapperInfoUser,
+    WrapperItem,
+    WrapperItemLabel,
+    WrapperLabel,
+    WrapperNameProduct,
+    WrapperProduct,
+    WrapperStyleContent,
+} from "./style";
+import { FileSearchOutlined, SearchOutlined } from "@ant-design/icons";
 import TableComponent from "../TableComponent/TableComponent";
 import InputComponent from "../InputComponent/InputComponent";
-import { Button, Form, Space, Switch } from "antd";
+import { Button, Form, Space } from "antd";
 import Loading from "../LoadingComponent/LoadingComponent";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useQuery } from "@tanstack/react-query";
@@ -12,17 +24,25 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as OrderService from "../../services/OrderService";
 import { useSelector } from "react-redux";
 import { orderContent } from "../../content";
+import { convertPrice } from "../../utils";
 
 const AdminOrder = () => {
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-    const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
+    const [isLoadingDetails, setIsLoadingDetails] = useState(false);
     const [rowSelected, setRowSelected] = useState("");
     const user = useSelector((state) => state?.user);
     const [form] = Form.useForm();
 
     const [stateOrder, setStateOrder] = useState({
+        orderItems: [],
+        shippingAddress: {},
+        paymentMethod: "",
+        itemsPrice: 0,
+        shippingPrice: 0,
+        totalPrice: 0,
         isPaid: false,
         isDelivered: false,
+        createdAt: "",
     });
 
     // Call API
@@ -48,34 +68,46 @@ const AdminOrder = () => {
         );
         if (res?.data) {
             setStateOrder({
+                orderItems: res?.data?.orderItems,
+                shippingAddress: res?.data?.shippingAddress,
+                paymentMethod: res?.data?.paymentMethod,
+                itemsPrice: res?.data?.itemsPrice,
+                shippingPrice: res?.data?.shippingPrice,
+                totalPrice: res?.data?.totalPrice,
                 isPaid: res?.data?.isPaid,
                 isDelivered: res?.data?.isDelivered,
+                createdAt: res?.data?.createdAt,
             });
         }
-        setIsLoadingUpdate(false);
+        setIsLoadingDetails(false);
         return res;
     };
 
     useEffect(() => {
         if (rowSelected && isOpenDrawer) {
+            setIsLoadingDetails(true);
             fetchGetOrder(rowSelected);
         }
     }, [rowSelected, isOpenDrawer]);
 
-    // const renderAction = () => {
-    //     return (
-    //         <div style={{ display: "flex", gap: "15px" }}>
-    //             <EditTwoTone
-    //                 style={{ fontSize: "30px", cursor: "pointer" }}
-    //                 onClick={handleDetailsOrder}
-    //             />
-    //         </div>
-    //     );
-    // };
+    const renderAction = () => {
+        return (
+            <div style={{ display: "flex", gap: "15px" }}>
+                <FileSearchOutlined
+                    style={{
+                        fontSize: "30px",
+                        cursor: "pointer",
+                        color: "#0396FF",
+                    }}
+                    onClick={handleDetailsOrder}
+                />
+            </div>
+        );
+    };
 
     const handleDetailsOrder = () => {
         if (rowSelected) {
-            setIsLoadingUpdate(true);
+            setIsLoadingDetails(true);
             fetchGetOrder(rowSelected);
         }
         setIsOpenDrawer(true);
@@ -98,8 +130,15 @@ const AdminOrder = () => {
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
         setStateOrder({
+            orderItems: [],
+            shippingAddress: {},
+            paymentMethod: "",
+            itemsPrice: 0,
+            shippingPrice: 0,
+            totalPrice: 0,
             isPaid: false,
             isDelivered: false,
+            createdAt: "",
         });
         form.resetFields();
     };
@@ -112,28 +151,6 @@ const AdminOrder = () => {
             Message.error();
         }
     }, [isSuccessUpdated]);
-
-    const handleOnChangeDetails = (e) => {
-        setStateOrder({
-            ...stateOrder,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const onUpdateOrder = () => {
-        mutationUpdate.mutate(
-            {
-                id: rowSelected,
-                ...stateOrder,
-                token: user?.access_token,
-            },
-            {
-                onSettled: () => {
-                    queryOrder.refetch();
-                },
-            }
-        );
-    };
 
     // Search
     const searchInput = useRef(null);
@@ -280,11 +297,11 @@ const AdminOrder = () => {
             dataIndex: "paymentMethod",
             sorter: (a, b) => a.paymentMethod.length - b.paymentMethod.length,
         },
-        // {
-        //     title: "Action",
-        //     dataIndex: "action",
-        //     render: renderAction,
-        // },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: renderAction,
+        },
     ];
 
     const dataTable =
@@ -301,6 +318,11 @@ const AdminOrder = () => {
                 paymentMethod: orderContent.payment[order?.paymentMethod],
             };
         });
+
+    // Format thời gian đặt hàng
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleString();
+    };
 
     return (
         <div>
@@ -321,70 +343,152 @@ const AdminOrder = () => {
                 />
             </div>
 
-            {/* Drawer Update User */}
+            {/* Drawer Order Details */}
             <DrawerComponent
-                title="Update user"
+                title="Order detail"
                 isOpen={isOpenDrawer}
                 onClose={handleCloseDrawer}
-                width="50%"
+                width="85%"
             >
-                <Loading isPending={isLoadingUpdate || isPendingUpdated}>
-                    <Form
-                        name="order details"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 20 }}
-                        style={{ maxWidth: 600 }}
-                        onFinish={onUpdateOrder}
-                        autoComplete="on"
-                        form={form}
+                <Loading isPending={isLoadingDetails || isPendingUpdated}>
+                    <div
+                        style={{
+                            width: "97%",
+                            background: "#f5f5f5",
+                            padding: "20px",
+                            borderRadius: "8px",
+                        }}
                     >
-                        <Form.Item
-                            label="Paid"
-                            name="isPaid"
-                            valuePropName="checked" // Gán checked cho switch
-                        >
-                            <Switch
-                                checked={stateOrder.isPaid}
-                                onChange={(checked) =>
-                                    handleOnChangeDetails({
-                                        target: {
-                                            name: "isPaid",
-                                            value: checked,
-                                        },
-                                    })
-                                }
-                            />
-                        </Form.Item>
+                        <WrapperHeaderUser>
+                            <WrapperInfoUser>
+                                <WrapperLabel>ORDER CREATED AT</WrapperLabel>
+                                <WrapperContentInfo>
+                                    <div className="created-at">
+                                        {formatDate(stateOrder.createdAt)}
+                                    </div>
+                                </WrapperContentInfo>
+                            </WrapperInfoUser>
 
-                        <Form.Item
-                            label="Shipped"
-                            name="isDelivered"
-                            valuePropName="checked" // Gán checked cho switch
-                        >
-                            <Switch
-                                checked={stateOrder.isDelivered}
-                                onChange={(checked) =>
-                                    handleOnChangeDetails({
-                                        target: {
-                                            name: "isDelivered",
-                                            value: checked,
-                                        },
-                                    })
-                                }
-                            />
-                        </Form.Item>
+                            <WrapperInfoUser>
+                                <WrapperLabel>PAYMENT METHOD</WrapperLabel>
+                                <WrapperContentInfo>
+                                    <div>Cash on Delivery</div>
+                                    <div className="status-payment">
+                                        {stateOrder.isPaid ? "Paid" : "Unpaid"}
+                                    </div>
+                                </WrapperContentInfo>
+                            </WrapperInfoUser>
 
-                        <Form.Item
-                            wrapperCol={{
-                                offset: 21,
-                                span: 16,
-                            }}
-                        >
-                            <Button type="primary" htmlType="submit">
-                                Apply
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                            <WrapperInfoUser>
+                                <WrapperLabel>RECIPIENT ADDRESS</WrapperLabel>
+                                <WrapperContentInfo>
+                                    <div className="name-info">
+                                        {stateOrder.shippingAddress.fullName}
+                                    </div>
+                                    <div className="address-info">
+                                        Address:{" "}
+                                        {`${stateOrder.shippingAddress.address}, ${stateOrder.shippingAddress.city}`}
+                                    </div>
+                                    <div className="phone-info">
+                                        Phone:{" "}
+                                        {stateOrder.shippingAddress.phone}
+                                    </div>
+                                </WrapperContentInfo>
+                            </WrapperInfoUser>
+
+                            <WrapperInfoUser>
+                                <WrapperLabel>DELIVERY METHOD</WrapperLabel>
+                                <WrapperContentInfo>
+                                    <div className="delivery-info">
+                                        <span className="name-delivery">
+                                            FAST
+                                        </span>{" "}
+                                        Economy delivery
+                                    </div>
+                                    <div className="delivery-fee">
+                                        Delivery fee:{" "}
+                                        {convertPrice(stateOrder.shippingPrice)}
+                                    </div>
+                                </WrapperContentInfo>
+                            </WrapperInfoUser>
+                        </WrapperHeaderUser>
+
+                        {/* Order items */}
+                        <WrapperStyleContent>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    paddingBottom: "10px",
+                                    borderBottom: "1px solid #ddd",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: "60%",
+                                        fontSize: "16px",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Product
+                                </div>
+                                <WrapperItemLabel>Price</WrapperItemLabel>
+                                <WrapperItemLabel>Amount</WrapperItemLabel>
+                                <WrapperItemLabel>Discount</WrapperItemLabel>
+                            </div>
+
+                            {stateOrder.orderItems.map((item) => (
+                                <WrapperProduct key={item._id}>
+                                    <WrapperNameProduct>
+                                        <img src={item.image} alt={item.name} />
+                                        <div>{item.name}</div>
+                                    </WrapperNameProduct>
+                                    <WrapperItem>
+                                        {convertPrice(item.price)}
+                                    </WrapperItem>
+                                    <WrapperItem>{item.amount}</WrapperItem>
+                                    <WrapperItem>
+                                        {item.discount
+                                            ? convertPrice(
+                                                  (item.price *
+                                                      item.discount *
+                                                      item.amount) /
+                                                      100
+                                              )
+                                            : "0 ₫"}
+                                        {<br />}({item.discount}%)
+                                    </WrapperItem>
+                                </WrapperProduct>
+                            ))}
+
+                            {/* Total Price Section */}
+                            <WrapperAllPrice>
+                                <WrapperItemLabel>Provisional</WrapperItemLabel>
+                                <WrapperItem>
+                                    {convertPrice(stateOrder.itemsPrice)}
+                                </WrapperItem>
+                            </WrapperAllPrice>
+
+                            <WrapperAllPrice>
+                                <WrapperItemLabel>
+                                    Delivery fee
+                                </WrapperItemLabel>
+                                <WrapperItem>
+                                    {convertPrice(stateOrder.shippingPrice)}
+                                </WrapperItem>
+                            </WrapperAllPrice>
+
+                            <WrapperAllPrice>
+                                <WrapperItemLabel style={{ fontSize: 20 }}>
+                                    TOTAL
+                                </WrapperItemLabel>
+                                <WrapperItem style={{ fontSize: 20 }}>
+                                    {convertPrice(stateOrder.totalPrice)}
+                                </WrapperItem>
+                            </WrapperAllPrice>
+                        </WrapperStyleContent>
+                    </div>
                 </Loading>
             </DrawerComponent>
         </div>
