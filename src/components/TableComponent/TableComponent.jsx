@@ -64,6 +64,7 @@ const TableComponent = (props) => {
         "image",
         "createdAt",
         "updatedAt",
+        "_id",
         "__v",
         "key",
         "avatar",
@@ -169,7 +170,7 @@ const TableComponent = (props) => {
                 </WrapperButtonExtend>
 
                 <Table
-                    pagination={{ pageSize: 8 }}
+                    pagination={{ pageSize: 7, position: ["bottomLeft"] }}
                     {...(selectionType && {
                         rowSelection: {
                             type: selectionType,

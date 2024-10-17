@@ -46,11 +46,14 @@ const DetailsOrderPage = () => {
         return result;
     }, [data]);
 
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleString();
+    };
+
     return (
         <Loading isPending={isPending}>
             <div
                 style={{
-                    width: "100%",
                     background: "#f5f5f5",
                     padding: "5px",
                 }}
@@ -91,6 +94,16 @@ const DetailsOrderPage = () => {
                         Order details
                     </div>
                     <WrapperHeaderUser>
+                        {/* Thời gian đặt hàng */}
+                        <WrapperInfoUser>
+                            <WrapperLabel>Order create at</WrapperLabel>
+                            <WrapperContentInfo>
+                                <div className="created-at">
+                                    {formatDate(data?.createdAt)}
+                                </div>
+                            </WrapperContentInfo>
+                        </WrapperInfoUser>
+
                         {/* Địa chỉ người nhận */}
                         <WrapperInfoUser>
                             <WrapperLabel>Recipient address</WrapperLabel>

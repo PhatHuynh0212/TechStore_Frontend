@@ -21,7 +21,7 @@ export const WrapperInfoUser = styled.div`
     width: 30%;
 
     .name-info {
-        font-size: 14px;
+        font-size: 15px;
         color: rgb(36, 36, 36);
         font-weight: bold;
         text-transform: uppercase;
@@ -32,7 +32,7 @@ export const WrapperInfoUser = styled.div`
     .delivery-fee,
     .payment-info {
         color: rgba(0, 0, 0, 0.75);
-        font-size: 13px;
+        font-size: 14px;
         margin-top: 8px;
     }
     .name-delivery {
