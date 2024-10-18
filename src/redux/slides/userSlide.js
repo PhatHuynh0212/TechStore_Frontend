@@ -24,7 +24,7 @@ export const userSlide = createSlice({
                 phone = "",
                 address = "",
                 avatar = "",
-                _id = "",
+                _id = state.id,
                 access_token = "",
                 isAdmin,
                 city = "",
