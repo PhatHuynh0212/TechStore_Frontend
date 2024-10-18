@@ -75,8 +75,8 @@ const HomePage = () => {
                 <div
                     id="container"
                     style={{
+                        paddingBottom: "20px",
                         width: "1270px",
-                        height: "2000px",
                         margin: "0 auto",
                     }}
                 >

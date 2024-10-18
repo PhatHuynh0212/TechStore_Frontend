@@ -34,7 +34,7 @@ const ProductDetailsPage = () => {
             </div>
             <div
                 style={{
-                    padding: "5px 105px",
+                    padding: "5px 103px",
                     background: "#efefef",
                     height: "100vh",
                     width: "1270px",
