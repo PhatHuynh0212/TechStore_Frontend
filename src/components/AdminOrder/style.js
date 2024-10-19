@@ -1,10 +1,37 @@
 import { Button, Form, Upload } from "antd";
 import styled from "styled-components";
 
+export const WrapperHeaderOrder = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
 export const WrapperHeader = styled.h1`
-    margin-top: 0;
     color: #000;
     font-size: 2rem;
+`;
+
+export const FirstOrderTime = styled.span`
+    font-size: 1.5rem;
+    color: #007bff;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background-color: rgba(0, 123, 255, 0.1);
+    margin-left: 10px;
+`;
+
+export const LastOrderTime = styled.span`
+    font-size: 1.5rem;
+    color: #28a745;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    background-color: rgba(40, 167, 69, 0.1);
+    margin-left: 10px;
 `;
 
 export const WrapperButtonAdd = styled(Button)`

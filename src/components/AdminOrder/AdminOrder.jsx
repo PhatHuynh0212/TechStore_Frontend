@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+    FirstOrderTime,
+    LastOrderTime,
     WrapperAllPrice,
     WrapperContentInfo,
     WrapperHeader,
+    WrapperHeaderOrder,
     WrapperHeaderUser,
     WrapperInfoUser,
     WrapperItem,
@@ -30,6 +33,8 @@ const AdminOrder = () => {
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const [isLoadingDetails, setIsLoadingDetails] = useState(false);
     const [rowSelected, setRowSelected] = useState("");
+    const [firstOrderTime, setFirstOrderTime] = useState(null);
+    const [latestOrderTime, setLatestOrderTime] = useState(null);
     const user = useSelector((state) => state?.user);
     const [form] = Form.useForm();
 
@@ -54,8 +59,22 @@ const AdminOrder = () => {
 
     const getAllOrder = async () => {
         const res = await OrderService.getAllOrder(user?.access_token);
+        // Lấy thời gian đơn hàng đầu cuối
+        if (res?.data?.length) {
+            const sortedOrders = res.data.sort(
+                (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+            );
+            setFirstOrderTime(sortedOrders[0]?.createdAt);
+            setLatestOrderTime(
+                sortedOrders[sortedOrders.length - 1]?.createdAt
+            );
+        }
         return res;
     };
+
+    useEffect(() => {
+        getAllOrder();
+    }, []);
 
     useEffect(() => {
         form.setFieldsValue(stateOrder);
@@ -319,14 +338,40 @@ const AdminOrder = () => {
             };
         });
 
-    // Format thời gian đặt hàng
+    // Format thời gian đơn hàng
+    const formatDateOrder = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString();
     };
 
     return (
         <div>
-            <WrapperHeader>Order management</WrapperHeader>
+            <WrapperHeaderOrder>
+                <WrapperHeader>Order management</WrapperHeader>
+                <div>
+                    {firstOrderTime && latestOrderTime ? (
+                        <>
+                            <FirstOrderTime>
+                                {" "}
+                                From {formatDateOrder(firstOrderTime)}
+                            </FirstOrderTime>
+                            <LastOrderTime>
+                                {" "}
+                                to {formatDateOrder(latestOrderTime)}
+                            </LastOrderTime>
+                        </>
+                    ) : (
+                        <div></div>
+                    )}
+                </div>
+            </WrapperHeaderOrder>
             <div>
                 <TableComponent
                     columns={columns}

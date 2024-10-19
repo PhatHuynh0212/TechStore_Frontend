@@ -62,13 +62,11 @@ const TableComponent = (props) => {
     // Danh sách các cột cần loại bỏ
     const excludedColumns = [
         "image",
-        "createdAt",
         "updatedAt",
         "_id",
         "__v",
         "key",
         "avatar",
-        "orderItems",
     ];
 
     // Hàm flatten object lồng nhau
@@ -76,9 +74,20 @@ const TableComponent = (props) => {
         for (let key in obj) {
             if (Object.hasOwnProperty.call(obj, key)) {
                 const propName = parent ? `${parent}_${key}` : key;
-                if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+                if (Array.isArray(obj[key])) {
+                    // Xử lý đặc biệt cho mảng orderItems
+                    if (key === "orderItems") {
+                        // Ghép tất cả các sản phẩm trong orderItems thành một chuỗi duy nhất
+                        const items = obj[key]
+                            .map((item) => `${item.name} - ${item.amount}`)
+                            .join(", ");
+                        res[propName] = items;
+                    }
+                } else if (typeof obj[key] === "object" && obj[key] !== null) {
+                    // Trải phẳng các object lồng nhau
                     flattenObject(obj[key], propName, res);
                 } else {
+                    // Sao chép các giá trị không phải object
                     res[propName] = obj[key];
                 }
             }
