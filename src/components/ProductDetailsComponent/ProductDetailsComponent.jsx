@@ -241,10 +241,16 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <hr />
                     <WrapperAddressProduct>
                         <span>Delivered to </span>
-                        <span className="address">
-                            {user?.address} - {user?.city}
-                        </span>
-                        {" - "}
+                        {user?.address && user?.city ? (
+                            <span>
+                                <span className="address">
+                                    {user?.address} - {user?.city}
+                                </span>
+                                {" - "}
+                            </span>
+                        ) : (
+                            <span>... </span>
+                        )}
                         <span
                             className="change-address"
                             onClick={() => navigate("/profile-user")}
