@@ -16,7 +16,7 @@ function App() {
 
     useEffect(() => {
         // Kiểm tra và xóa access_token nếu không có refresh_token
-        const refreshToken = getCookie("refresh_token");
+        const refreshToken = localStorage.getItem("refresh_token");
         if (!refreshToken) {
             localStorage.removeItem("access_token");
         }
@@ -32,12 +32,12 @@ function App() {
     }, []);
 
     // Hàm lấy cookie
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(";").shift();
-        return null;
-    };
+    // const getCookie = (name) => {
+    //     const value = `; ${document.cookie}`;
+    //     const parts = value.split(`; ${name}=`);
+    //     if (parts.length === 2) return parts.pop().split(";").shift();
+    //     return null;
+    // };
 
     const handleDecoded = () => {
         let storageData = localStorage.getItem("access_token");

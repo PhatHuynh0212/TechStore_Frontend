@@ -44,6 +44,7 @@ const AdminUser = () => {
         name: "",
         email: "",
         address: "",
+        city: "",
         phone: "",
         isAdmin: false,
         avatar: "",
@@ -91,6 +92,7 @@ const AdminUser = () => {
                 email: res?.data?.email,
                 phone: res?.data?.phone,
                 address: res?.data?.address,
+                city: res?.data?.city,
                 isAdmin: res?.data?.isAdmin,
                 avatar: res?.data?.avatar,
             });
@@ -193,6 +195,7 @@ const AdminUser = () => {
             email: "",
             phone: "",
             address: "",
+            city: "",
             isAdmin: false,
         });
         form.resetFields();
@@ -422,8 +425,12 @@ const AdminUser = () => {
         {
             title: "Address",
             dataIndex: "address",
-            sorter: (a, b) => a.address.length - b.address.length,
             ...getColumnSearchProps("address"),
+        },
+        {
+            title: "City",
+            dataIndex: "city",
+            ...getColumnSearchProps("city"),
         },
         {
             title: "Admin",
@@ -729,6 +736,23 @@ const AdminUser = () => {
                                 value={stateUserDetails.address}
                                 onChange={handleOnChangeDetails}
                                 name="address"
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="City"
+                            name="city"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please input your city!",
+                                },
+                            ]}
+                        >
+                            <InputComponent
+                                value={stateUserDetails.city}
+                                onChange={handleOnChangeDetails}
+                                name="city"
                             />
                         </Form.Item>
 

@@ -57,6 +57,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setPending(true);
         await UserService.logoutUser();
         localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         localStorage.removeItem("persist:root");
         dispatch(resetUser());
         dispatch(resetOrder());
@@ -135,15 +136,31 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                 <UserOutlined style={{ fontSize: "30px" }} />
                             )}
                             {user?.access_token ? (
-                                <>
+                                <div
+                                    style={{
+                                        width: "120px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
                                     <Popover content={content} trigger="click">
-                                        <div style={{ cursor: "pointer" }}>
+                                        <div
+                                            style={{
+                                                cursor: "pointer",
+                                                padding: "10px 0",
+                                                width: "120px",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                            }}
+                                        >
                                             {userName?.length
                                                 ? userName
                                                 : user?.email}
                                         </div>
                                     </Popover>
-                                </>
+                                </div>
                             ) : (
                                 <div
                                     onClick={handleNavigateSignin}
