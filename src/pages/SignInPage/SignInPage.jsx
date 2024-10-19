@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
+    StyledErrorMessage,
     WrapperContainerLeft,
     WrapperContainerRight,
     WrapperSignInContainer,
@@ -18,6 +19,7 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlide";
+import * as Message from "../../components/Message/Message";
 
 const SignInPage = () => {
     const navigate = useNavigate();
@@ -44,11 +46,11 @@ const SignInPage = () => {
     );
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && data?.status === "OK") {
             if (location?.state) {
                 navigate(location?.state);
             } else {
-                navigate("/"); // Điều hướng về trang chủ
+                navigate("/");
             }
             localStorage.setItem(
                 "access_token",
@@ -64,29 +66,10 @@ const SignInPage = () => {
                     handleGetDetailsUser(decoded?.id, data?.access_token);
                 }
             }
+        } else if (data?.status === "ERR") {
+            Message.error();
         }
-    }, [isSuccess]);
-
-    // useEffect(() => {
-    //     if (isSuccess) {
-    //         navigate("/");
-    //         localStorage.setItem(
-    //             "access_token",
-    //             JSON.stringify(data?.access_token)
-    //         );
-    //         if (data?.access_token) {
-    //             const decoded = jwtDecode(data?.access_token);
-    //             if (decoded?.id) {
-    //                 handleGetDetailsUser(decoded?.id, data?.access_token);
-    //             }
-    //         }
-    //     }
-    // }, [isSuccess]);
-
-    // const handleGetDetailsUser = async (id, token) => {
-    //     const res = await UserService.getDetailsUser(id, token);
-    //     dispatch(updateUser({ ...res?.data, access_token: token }));
-    // };
+    }, [isSuccess, data, location, navigate, handleGetDetailsUser]);
 
     const handleNavigateSignUp = () => {
         navigate("/sign-up");
@@ -143,7 +126,7 @@ const SignInPage = () => {
                         />
                     </div>
                     {data?.status === "ERR" && (
-                        <span style={{ color: "red" }}>{data?.message}</span>
+                        <StyledErrorMessage>{data?.message}</StyledErrorMessage>
                     )}
                     <Loading isPending={isPending}>
                         <ButtonComponent

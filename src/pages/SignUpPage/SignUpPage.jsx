@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    StyledErrorMessage,
     WrapperContainerLeft,
     WrapperContainerRight,
     WrapperSignInContainer,
@@ -30,13 +31,13 @@ const SignUpPage = () => {
     const { data, isPending, isSuccess, isError } = mutation;
 
     useEffect(() => {
-        if (isSuccess) {
-            Message.success();
+        if (isSuccess && data?.status === "OK") {
+            Message.success("Sign up successfully!");
             handleNavigateSignIn();
-        } else if (isError) {
+        } else if (data?.status === "ERR" || isError) {
             Message.error();
         }
-    }, [isSuccess, isError]);
+    }, [isSuccess, isError, data]);
 
     const handleNavigateSignIn = () => {
         navigate("/sign-in");
@@ -123,14 +124,15 @@ const SignUpPage = () => {
                         />
                     </div>
                     {data?.status === "ERR" && (
-                        <span style={{ color: "red" }}>{data?.message}</span>
+                        <StyledErrorMessage>{data?.message}</StyledErrorMessage>
                     )}
                     <Loading isPending={isPending}>
                         <ButtonComponent
                             disabled={
                                 !email.length ||
                                 !password.length ||
-                                !confirmPassword.length
+                                !confirmPassword.length ||
+                                password !== confirmPassword
                             }
                             onClick={handleSignUp}
                             size={40}

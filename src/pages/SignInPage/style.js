@@ -36,3 +36,17 @@ export const WrapperTextLight = styled.span`
     font-size: 1.4rem;
     cursor: pointer;
 `;
+
+export const StyledErrorMessage = styled.span`
+    color: #ff4d4f;
+    font-size: 1.4rem;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #fff1f0;
+    border: 1px solid #ffa39e;
+    border-radius: 5px;
+    display: inline-block;
+    width: fit-content;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+`;
