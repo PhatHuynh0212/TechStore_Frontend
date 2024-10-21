@@ -74,8 +74,17 @@ const TableComponent = (props) => {
         for (let key in obj) {
             if (Object.hasOwnProperty.call(obj, key)) {
                 const propName = parent ? `${parent}_${key}` : key;
+
+                // Bỏ qua các thuộc tính không mong muốn ở cấp cao nhất
+                if (
+                    ["userName", "phone", "address"].includes(key) &&
+                    parent !== "shippingAddress"
+                ) {
+                    continue; // Bỏ qua những key này nếu không phải thuộc shippingAddress
+                }
+
+                // Nếu phần tử là mảng
                 if (Array.isArray(obj[key])) {
-                    // Xử lý đặc biệt cho mảng orderItems
                     if (key === "orderItems") {
                         // Ghép tất cả các sản phẩm trong orderItems thành một chuỗi duy nhất
                         const items = obj[key]
@@ -124,6 +133,10 @@ const TableComponent = (props) => {
 
             // Thêm dữ liệu vào sheet
             filteredData.forEach((row) => {
+                // Định dạng cột createdAt là date
+                if (row.createdAt) {
+                    row.createdAt = new Date(row.createdAt);
+                }
                 worksheet.addRow(row);
             });
         }
