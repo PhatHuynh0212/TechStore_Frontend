@@ -149,7 +149,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                             style={{
                                                 cursor: "pointer",
                                                 padding: "10px 0",
-                                                width: "120px",
+                                                width:
+                                                    userName?.length > 16
+                                                        ? "120px"
+                                                        : "fit-content",
                                                 overflow: "hidden",
                                                 textOverflow: "ellipsis",
                                                 whiteSpace: "nowrap",
