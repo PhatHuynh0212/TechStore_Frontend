@@ -3,9 +3,17 @@ import styled from "styled-components";
 
 export const WrapperCardStyle = styled(Card)`
     width: 230px;
+    overflow: hidden;
+    border-radius: 10px;
+
     & img {
         width: 240px;
         height: 240px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    &:hover img {
+        transform: scale(1.02);
     }
     background-color: ${(props) => (props.disabled ? "#ccc" : "#fff")};
     cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
