@@ -18,7 +18,7 @@ import {
 import { FileSearchOutlined, SearchOutlined } from "@ant-design/icons";
 import TableComponent from "../TableComponent/TableComponent";
 import InputComponent from "../InputComponent/InputComponent";
-import { Button, Form, Space } from "antd";
+import { Button, DatePicker, Form, Space } from "antd";
 import Loading from "../LoadingComponent/LoadingComponent";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useQuery } from "@tanstack/react-query";
@@ -182,6 +182,7 @@ const AdminOrder = () => {
         confirm();
     };
 
+    // Search
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({
             setSelectedKeys,
@@ -267,12 +268,75 @@ const AdminOrder = () => {
         },
     });
 
+    // Search Date
+    const getColumnSearchDate = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }) => (
+            <div style={{ padding: 8 }}>
+                <DatePicker
+                    placeholder="Select date"
+                    onChange={(date, dateString) => {
+                        if (dateString) {
+                            // Chuyển dateString sang dd/mm/yyyy nếu cần thiết
+                            const formattedSelectedDate =
+                                formatDateOrder(dateString);
+                            setSelectedKeys([formattedSelectedDate]);
+                        } else {
+                            setSelectedKeys([]);
+                        }
+                    }}
+                    style={{ marginBottom: 8, display: "block" }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() =>
+                            clearFilters && handleReset(clearFilters, confirm)
+                        }
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Reset
+                    </Button>
+                </Space>
+            </div>
+        ),
+        onFilter: (value, record) => {
+            // Lấy ngày của đơn hàng từ record và định dạng theo dd/mm/yyyy
+            const formattedDate = formatDateOrder(record[dataIndex]);
+            return formattedDate === value; // So sánh ngày đã được định dạng
+        },
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{ color: filtered ? "#1677ff" : undefined }}
+            />
+        ),
+    });
+
     // Data table
     const columns = [
         {
+            title: "Date",
+            dataIndex: "createdAt",
+            render: (createdAt) => formatDateOrder(createdAt),
+            ...getColumnSearchDate("createdAt"),
+        },
+        {
             title: "User name",
             dataIndex: "userName",
-            sorter: (a, b) => a.userName.length - b.userName.length,
+            // sorter: (a, b) => a.userName.length - b.userName.length,
             ...getColumnSearchProps("userName"),
         },
         {
@@ -283,18 +347,18 @@ const AdminOrder = () => {
         {
             title: "Address",
             dataIndex: "address",
-            sorter: (a, b) => a.address.length - b.address.length,
+            // sorter: (a, b) => a.address.length - b.address.length,
             ...getColumnSearchProps("address"),
         },
         {
             title: "Price items",
             dataIndex: "itemsPrice",
-            sorter: (a, b) => a.itemsPrice - b.itemsPrice,
+            // sorter: (a, b) => a.itemsPrice - b.itemsPrice,
         },
         {
             title: "Shipping fee",
             dataIndex: "shippingPrice",
-            sorter: (a, b) => a.shippingPrice - b.shippingPrice,
+            // sorter: (a, b) => a.shippingPrice - b.shippingPrice,
         },
         {
             title: "Total price",
@@ -304,17 +368,17 @@ const AdminOrder = () => {
         {
             title: "Paid",
             dataIndex: "isPaid",
-            sorter: (a, b) => a.isPaid.length - b.isPaid.length,
+            // sorter: (a, b) => a.isPaid.length - b.isPaid.length,
         },
         {
             title: "Shipped",
             dataIndex: "isDelivered",
-            sorter: (a, b) => a.isDelivered.length - b.isDelivered.length,
+            // sorter: (a, b) => a.isDelivered.length - b.isDelivered.length,
         },
         {
             title: "Payment",
             dataIndex: "paymentMethod",
-            sorter: (a, b) => a.paymentMethod.length - b.paymentMethod.length,
+            // sorter: (a, b) => a.paymentMethod.length - b.paymentMethod.length,
         },
         {
             title: "Action",
