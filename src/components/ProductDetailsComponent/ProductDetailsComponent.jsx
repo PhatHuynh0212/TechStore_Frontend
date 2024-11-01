@@ -30,7 +30,9 @@ import {
     addOrderProduct,
     resetStateOrder,
 } from "../../redux/slides/orderSlide";
-import { convertPrice } from "../../utils";
+import { convertPrice, initFacebookSDK } from "../../utils";
+import LikeButtonComponent from "../LikeButtonComponent/LikeButtonComponent";
+import CommentComponent from "../CommentComponent/CommentConponent";
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const navigate = useNavigate();
@@ -131,6 +133,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
             }
         }
     };
+
+    useEffect(() => {
+        initFacebookSDK();
+    }, []);
 
     return (
         <Loading isPending={isLoading}>
@@ -258,6 +264,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             Change address
                         </span>
                     </WrapperAddressProduct>
+                    <LikeButtonComponent
+                        dataHref={
+                            "https://developers.facebook.com/docs/plugins/"
+                        }
+                    />
                     <hr />
                     <div style={{ margin: "10px 0 20px" }}>
                         <span>Quantity</span>
@@ -365,6 +376,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         />
                     </div>
                 </Col>
+                <CommentComponent
+                    dataHref={
+                        "https://developers.facebook.com/docs/plugins/comments#configurator"
+                    }
+                    width="1240"
+                />
             </Row>
         </Loading>
     );

@@ -36,7 +36,6 @@ const ProductDetailsPage = () => {
                 style={{
                     padding: "5px 103px",
                     background: "#efefef",
-                    height: "100vh",
                     width: "1270px",
                 }}
             >
