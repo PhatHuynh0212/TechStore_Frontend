@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import {
     WrapperButtonHover,
@@ -24,9 +24,10 @@ const HomePage = () => {
     const searchProduct = useSelector((state) => state?.product?.search);
     const searchDebounce = useDebounce(searchProduct, 0);
     const [loading, setLoading] = useState(false);
-    // Số lượng product hiển thị ở Trang Chủ
     const [limit, setLimit] = useState(10);
     const [typeProducts, setTypeProducts] = useState([]);
+    const [isFirstLoad, setIsFirstLoad] = useState(true); // Thêm state để kiểm tra lần tải đầu tiên
+    const endOfListRef = useRef(null);
 
     const fetchProductAll = async (context) => {
         const limit = context?.queryKey ? context?.queryKey[1] : 5;
@@ -43,10 +44,8 @@ const HomePage = () => {
     });
     const { isLoading, data: products } = query;
 
-    // Check load all product
     const allProductsLoaded = products?.data?.length >= products?.totalProduct;
 
-    // Fetch all type product
     const fetchAllTypeProduct = async () => {
         const res = await ProductService.getAllTypeProduct();
         if (res?.status === "OK") {
@@ -59,13 +58,23 @@ const HomePage = () => {
         fetchAllTypeProduct();
     }, []);
 
+    useEffect(() => {
+        if (!isLoading && !isFirstLoad) {
+            endOfListRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+        // Đặt lại isFirstLoad về false sau lần tải đầu tiên
+        if (isFirstLoad && !isLoading) {
+            setIsFirstLoad(false);
+        }
+    }, [products, isLoading]); // Chỉ cuộn khi không phải lần tải đầu tiên
+
     return (
         <Loading isPending={isLoading || loading}>
             <div style={{ width: "1270px", margin: "0 auto" }}>
                 <WrapperTypeProduct>
-                    {typeProducts?.map((item) => {
-                        return <TypeProduct key={item} name={item} />;
-                    })}
+                    {typeProducts?.map((item) => (
+                        <TypeProduct key={item} name={item} />
+                    ))}
                 </WrapperTypeProduct>
             </div>
             <div
@@ -90,24 +99,23 @@ const HomePage = () => {
                         ]}
                     />
                     <WrapperProduct>
-                        {products?.data?.map((product) => {
-                            return (
-                                <CardComponent
-                                    key={product._id}
-                                    id={product._id}
-                                    countInStock={product.countInStock}
-                                    description={product.description}
-                                    image={product.image}
-                                    name={product.name}
-                                    price={product.price}
-                                    rating={product.rating}
-                                    type={product.type}
-                                    selled={product.selled}
-                                    discount={product.discount}
-                                />
-                            );
-                        })}
+                        {products?.data?.map((product) => (
+                            <CardComponent
+                                key={product._id}
+                                id={product._id}
+                                countInStock={product.countInStock}
+                                description={product.description}
+                                image={product.image}
+                                name={product.name}
+                                price={product.price}
+                                rating={product.rating}
+                                type={product.type}
+                                selled={product.selled}
+                                discount={product.discount}
+                            />
+                        ))}
                     </WrapperProduct>
+                    <div ref={endOfListRef}></div> {/* Phần tử để cuộn tới */}
                     <WrapperButtonShow>
                         <WrapperButtonHover
                             disabled={
