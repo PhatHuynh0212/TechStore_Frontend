@@ -28,7 +28,7 @@
 - [Node.js](https://nodejs.org/docs/latest/api/): Process requests from users and manage data efficiently.
 - [Express.js](https://expressjs.com/): Builds a backend API to handle functions such as user authentication, product management, cart and orders.
 - [MongoDB](https://www.mongodb.com/): Stores website data.
-- [JSON Web Token](hhttps://www.npmjs.com/package/jsonwebtoken): Authenticate and manage user access rights, ensuring security when logging in and using the system.
+- [JSON Web Token](https://www.npmjs.com/package/jsonwebtoken): Authenticate and manage user access rights, ensuring security when logging in and using the system.
 
 ![](https://i.imgur.com/waxVImv.png)
 
