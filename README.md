@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+<h1 align="center" style="font-size: 58px">TechStore</h1>
+<p align="center"><strong>E-commerce Website</strong></p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# [Live Demo](https://tech-shop-blue.vercel.app/)
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- User Authentication: JWT authentication with role-based access for Admin (email below) and Users.
+- Product categories: Search for products, display by category navigation, view more products by pagination.
+- Product details: View detailed information, select quantity, add to cart.
+- User account: Register, log in, edit information, log out.
+- Cart management: Select products, edit quantity, delete products, proceed to purchase.
+- Order payment: Select delivery method, payment method, place order.
+- Order management: View order details, cancel order.
+- Customer care: Send consulting messages.
+- Product management (Admin): Search, add, edit, delete products.
+- Order management (Admin): Search, view details, export order reports.
+- User management (Admin): Search, edit information, delete users.
 
-### `npm start`
+![](https://i.imgur.com/waxVImv.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Main technology which I used
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [React](https://reactjs.org/): Used to build user interfaces for websites.
+- [Redux Toolkit](https://redux-toolkit.js.org/): Manages the global state of the application, helping to process product, cart, user and order data efficiently.
+- [Axios](https://axios-http.com/docs/intro): Used to make API requests between the frontend and backend, helping to retrieve and send data.
+- [Ant Design](https://ant.design/): Provides modern interface components, helping to design professional, synchronous and user-friendly websites.
+- [Node.js](https://nodejs.org/docs/latest/api/): Process requests from users and manage data efficiently.
+- [Express.js](https://expressjs.com/): Builds a backend API to handle functions such as user authentication, product management, cart and orders.
+- [MongoDB](https://www.mongodb.com/): Stores website data.
+- [JSON Web Token](hhttps://www.npmjs.com/package/jsonwebtoken): Authenticate and manage user access rights, ensuring security when logging in and using the system.
 
-### `npm test`
+![](https://i.imgur.com/waxVImv.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Email admin for testing
 
-### `npm run build`
+- Email: phat01@gmail.com
+- Password: 02122003
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Preview
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![homepage](src/assets/page-images/homepage.png)
+![customer-care](src/assets/page-images/customer-care.png)
+![user-info](src/assets/page-images/user-info.png)
+![login](src/assets/page-images/login.png)
+![category](src/assets/page-images/categogy.png)
+![detail](src/assets/page-images/detail.png)
+![cart](src/assets/page-images/cart.png)
+![payment](src/assets/page-images/payment.png)
+![order-success](src/assets/page-images/order-success.png)
+![manage-order](src/assets/page-images/manage-order.png)
+![admin](src/assets/page-images/admin.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![](https://i.imgur.com/waxVImv.png)
